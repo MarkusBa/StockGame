@@ -1,0 +1,41 @@
+CREATE TABLE item (
+  id bigserial primary key,
+  subjecturi varchar(255)  NOT NULL,
+  predicateuri varchar(255)  NOT NULL,
+  objecturi varchar(255)  NOT NULL,
+  ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+  maxTs timestamp NOT NULL ,
+  maxDeleted boolean ,
+  deleted boolean
+);
+
+CREATE INDEX ts_idx ON quad (ts);
+CREATE INDEX spo_idx ON quad (subjecturi,predicateuri,objecturi);
+
+
+
+CREATE TABLE big_data (
+  id bigserial primary key,
+  text TEXT,
+  datatype varchar(200),
+  ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+  deleted boolean,
+  maxTs timestamp NOT NULL ,
+  maxDeleted boolean NOT NULL,
+  filename varchar(255) DEFAULT NULL,
+  contentType varchar(255) DEFAULT NULL,
+  size bigint ,
+  theblob BYTEA
+);
+
+-- Inserts
+--   5 | http://www.test.de | http://www.test.de/visits | http://www.test.de/NewYork | 
+2014-11-08 16:27:14 | 2014-11-08 16:29:08 |          1 |       0
+insert into quad values (1, 'http://www.test.de', 'http://www.test.de/visits', 
+'http://www.test.de/NewYork', '2014-11-08 16:27:14', '2014-11-08 16:27:14', false, false);
+--  6 | http://www.test.de | http://www.test.de/visits | http://www.test.de/NewYork | 
+2014-11-08 16:27:57 | 2014-11-08 16:29:08 |          1 |       0 |
+insert into quad values (2, 'http://www.test.de', 'http://www.test.de/visits', 
+'http://www.test.de/NewYork', '2014-11-08 16:27:14', '2014-11-08 16:29:14', false, false);
+update quad set maxts = '2014-11-08 16:29:14';
+update quad set ts = '2014-11-08 16:29:14' where id = 2;
