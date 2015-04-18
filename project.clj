@@ -30,7 +30,9 @@
                         :source-paths ["src/cljs"]
                         :compiler {
                           :output-to "resources/public/js/Main.js"
-                          :optimizations :simple }}]})
+                          :output-dir "resources/public/js/build"
+                          :source-map "resources/public/js/stock.js.map"
+                          :optimizations :whitespace }}]})
 
 
 
