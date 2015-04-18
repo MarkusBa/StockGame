@@ -13,8 +13,7 @@
                  [ch.qos.logback/logback-classic "1.1.1"]
                  [org.clojure/tools.logging "0.2.3"]
                  [org.clojure/clojurescript "0.0-2411"]
-                 [om "0.5.3"]
-                 ;[reagent "0.5.0"]
+                 [reagent "0.5.0"]
                  [clj-http "1.1.0"]
                  [compojure "1.3.3"]
                  [org.clojure/data.json "0.2.6"]
@@ -24,13 +23,13 @@
             [lein-deps-tree "0.1.2"]]
   :java-source-paths ["src/java"]
   :resource-paths ["resources"]
-  ;;:core.typed {:check [config.parse]}
+  :core.typed {:check [config.parse]}
   :source-paths ["src/clj" "src/cljs"]
   :cljsbuild
       {:builds [{
                         :source-paths ["src/cljs"]
                         :compiler {
-                          :output-to "resources/public/js/main.js"
+                          :output-to "resources/public/js/Main.js"
                           :optimizations :simple }}]})
 
 
