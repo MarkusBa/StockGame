@@ -11,3 +11,4 @@
 /.lein-repl-history
 /.nrepl-port
 /target
+resources/public/js/build/

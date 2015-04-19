@@ -1,6 +1,8 @@
 (ns routing.routes
   (:require [ring.util.response :refer [file-response]]
             [ring.adapter.jetty :refer [run-jetty]]
+            [ring.middleware.edn :refer [wrap-edn-params]]
+            [clj-http.client :as client]
             [compojure.core :refer [defroutes GET PUT DELETE POST]]
             [compojure.route :as route]
             [compojure.handler :as handler]
@@ -19,19 +21,32 @@
 
 (defn generate-response [data & [status]]
   {:status (or status 200)
-   :headers {"Content-Type" "application/json"}
-   :body (json/write-str data :value-fn date-writer )})
+   :headers {"Content-Type" "application/edn"}
+   :body (pr-str data)})
 
 (defn items []
   (generate-response (db/get-items )))
 
+(defn queryyahoo [searchstring]
+  (log/error "searchstring is" searchstring)
+  (:body (client/get (str "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=" searchstring
+                                  "&callback=YAHOO.Finance.SymbolSuggest.ssCallback"))))
+
+(defn query [{:keys [query] :as params}]
+  (log/error "query" query)
+  (generate-response (queryyahoo query)))
+
 (defroutes routes
   (GET "/" [] (index))
+  (GET "/query" {params :params edn-params :edn-params}
+    (log/error "fuck you" params edn-params)
+    (query edn-params))
   (GET "/items" [] (items))
   (route/files "/" {:root "resources/public"}))
 
 (def app
-  (-> routes))
+  (-> routes
+      wrap-edn-params))
 
 (defonce server
   (run-jetty #'app {:port 8080 :join? false}))
