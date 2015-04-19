@@ -32,21 +32,19 @@
   (:body (client/get (str "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=" searchstring
                                   "&callback=YAHOO.Finance.SymbolSuggest.ssCallback"))))
 
-(defn query [{:keys [query] :as params}]
+(defn exquery [{:keys [query] :as params}]
   (log/error "query" query)
   (generate-response (queryyahoo query)))
 
 (defroutes routes
   (GET "/" [] (index))
-  (GET "/query" {params :params edn-params :edn-params}
-    (log/error "fuck you" params edn-params)
-    (query edn-params))
+  (GET "/query" {params :params}
+    (exquery params))
   (GET "/items" [] (items))
   (route/files "/" {:root "resources/public"}))
 
 (def app
-  (-> routes
-      wrap-edn-params))
+  (-> routes handler/site))
 
 (defonce server
   (run-jetty #'app {:port 8080 :join? false}))
