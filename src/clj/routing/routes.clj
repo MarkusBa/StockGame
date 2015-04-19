@@ -31,11 +31,13 @@
 (defn queryyahoo [searchstring]
   (let [res (cljstr/replace (:body (client/get (str "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=" searchstring
                                   "&callback=YAHOO.Finance.SymbolSuggest.ssCallback")))
-                  #"YAHOO.Finance.SymbolSuggest.ssCallback\((.*?)\)" "$1")]
-    res))
+                  #"YAHOO.Finance.SymbolSuggest.ssCallback\((.*?)\)" "$1")
+        text res]
+        ;;text (get (get (json/read-str res) "ResultSet") "Result")]
+        (log/info "queryyahoo: " text)
+        text))
 
 (defn exquery [{:keys [query] :as params}]
-  (log/error "query" query)
   (generate-response (queryyahoo query)))
 
 (defroutes routes
@@ -51,10 +53,3 @@
 (defonce server
   (run-jetty #'app {:port 8080 :join? false}))
 
-(comment
-  (defn queryyahoo [searchstring]
-  (let [res (cljstr/replace (:body (client/get (str "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=" searchstring
-                                  "&callback=YAHOO.Finance.SymbolSuggest.ssCallback")))
-                  "YAHOO.Finance.SymbolSuggest.ssCallback(" "")
-        re (subs res 0 (- (.length res ) 1))]
-    re)))

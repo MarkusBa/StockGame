@@ -1,131 +1,93 @@
 (ns core.start
   (:require-macros [cljs.core.async.macros :refer [go]])
-  (:require [reagent.core :as r]
+  (:require [reagent.core :as r :refer [atom]]
+            [cognitect.transit :as transit]
             [cljs-http.client :as http]
             [cljs.core.async :refer [<!]]))
 
 (enable-console-print!)
 
+(def rdr (transit/reader :json))
 
-(go (let [response (<! (http/get "query" {:query-params {"query" "salzgitter"}}))]
-      (println (:status response))
-      (println (:body response))))
+(defn read-response [response]
+  (let [temp1 (:body response)
+        nthg  (println temp1)
+        temp (transit/read rdr temp1)
+        text (get (get temp "ResultSet") "Result")]
+     (println text)
+      text))
 
+;;;;;; state
+(def state (atom {:stocks [{"symbol" "SZG.SG", "name" "SALZGITTER", "exch" "STU", "type" "S", "exchDisp" "Stuttgart", "typeDisp" "Equity"}
+                           {"symbol" "SZG.MU", "name" "SALZGITTER", "exch" "MUN", "type" "S", "exchDisp" "Munich", "typeDisp" "Equity"}]}))
 
+(defn yahooquery [param]
+  ;(println param)
+  (go (let [response (<! (http/get "query" {:query-params {"query" param}}))]
+        (swap! state assoc :stocks (read-response response)))))
 
+(defn lister [items]
+  [:ul
+   (for [item items]
+     ^{:key item} [:li (get item "symbol")])])
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-;;(init)
+(defn list-of-stocks []
+  [:div
+   [:h1 "List of stocks"]
+   [lister (:stocks @state)]])
 
 (defn init []
   (r/render-component
    [list-of-stocks]
    (.-body js/document)))
 
+(init)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+(yahooquery "basf")
 
 (comment
+  (defn yahooquery [param]
+  (read-response (http/get "query" {:query-params {"query" param}})))
 
-(def app-state
-  (r/atom
-   {:query nil}))
+  (defn read-response [response]
+  (let [temp (transit/read rdr (:body response))]
+     (println temp)
+      temp))
 
-(def ^:private meths
-  {:get "GET"
-   :put "PUT"
-   :post "POST"
-   :delete "DELETE"})
+  (temp (cljs.reader/read-string temp1))
+  (temp (.parse js/JSON temp1))
+)
 
-(defn edn-xhr [{:keys [method url data on-complete]}]
-  (let [xhr (XhrIo.)]
-    (events/listen xhr goog.net.EventType.COMPLETE
-      (fn [e]
-        (on-complete (reader/read-string (.getResponseText xhr)))))
-    (. xhr
-      (send url (meths method) (when data (pr-str data))
-        #js {"Content-Type" "application/edn"}))))
 
-(defn query [q]
-  (edn-xhr
-    {:method :get
-     :url (str "query")
-     :data {:query q}
-     :on-complete
-     (fn [res]
-       (apply swap! app-state update-in [:query] res))}))
 
-(defn lister [items]
-  [:ul
-   (for [item items]
-     ^{:key item} [:li item])])
 
-(defn list-of-stocks []
-  [:div
-   [:h1 "List of stocks"]
-   [lister (:query (@app-state))]])
 
-  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
