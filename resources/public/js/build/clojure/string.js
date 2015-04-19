@@ -96,8 +96,8 @@ clojure.string.pop_last_while_empty = (function pop_last_while_empty(v){
 var v__$1 = v;
 while(true){
 if(cljs.core._EQ_.call(null,"",cljs.core.peek.call(null,v__$1))){
-var G__9792 = cljs.core.pop.call(null,v__$1);
-v__$1 = G__9792;
+var G__9793 = cljs.core.pop.call(null,v__$1);
+v__$1 = G__9793;
 continue;
 } else {
 return v__$1;
@@ -116,12 +116,12 @@ clojure.string.split_with_empty_regex = (function split_with_empty_regex(s,limit
 if(((limit <= (0))) || ((limit >= ((2) + cljs.core.count.call(null,s))))){
 return cljs.core.conj.call(null,cljs.core.vec.call(null,cljs.core.cons.call(null,"",cljs.core.map.call(null,cljs.core.str,cljs.core.seq.call(null,s)))),"");
 } else {
-var pred__9796 = cljs.core._EQ_;
-var expr__9797 = limit;
-if(cljs.core.truth_(pred__9796.call(null,(1),expr__9797))){
+var pred__9797 = cljs.core._EQ_;
+var expr__9798 = limit;
+if(cljs.core.truth_(pred__9797.call(null,(1),expr__9798))){
 return (new cljs.core.PersistentVector(null,1,(5),cljs.core.PersistentVector.EMPTY_NODE,[s],null));
 } else {
-if(cljs.core.truth_(pred__9796.call(null,(2),expr__9797))){
+if(cljs.core.truth_(pred__9797.call(null,(2),expr__9798))){
 return (new cljs.core.PersistentVector(null,2,(5),cljs.core.PersistentVector.EMPTY_NODE,["",s],null));
 } else {
 var c = (limit - (2));
@@ -151,12 +151,12 @@ var temp__4401__auto__ = cljs.core.re_find.call(null,re,s__$1);
 if(cljs.core.truth_(temp__4401__auto__)){
 var m = temp__4401__auto__;
 var index = s__$1.indexOf(m);
-var G__9799 = s__$1.substring((index + cljs.core.count.call(null,m)));
-var G__9800 = (limit__$1 - (1));
-var G__9801 = cljs.core.conj.call(null,parts,s__$1.substring((0),index));
-s__$1 = G__9799;
-limit__$1 = G__9800;
-parts = G__9801;
+var G__9800 = s__$1.substring((index + cljs.core.count.call(null,m)));
+var G__9801 = (limit__$1 - (1));
+var G__9802 = cljs.core.conj.call(null,parts,s__$1.substring((0),index));
+s__$1 = G__9800;
+limit__$1 = G__9801;
+parts = G__9802;
 continue;
 } else {
 return cljs.core.conj.call(null,parts,s__$1);
@@ -218,8 +218,8 @@ return "";
 } else {
 var ch = cljs.core.get.call(null,s,(index - (1)));
 if((cljs.core._EQ_.call(null,ch,"\n")) || (cljs.core._EQ_.call(null,ch,"\r"))){
-var G__9802 = (index - (1));
-index = G__9802;
+var G__9803 = (index - (1));
+index = G__9803;
 continue;
 } else {
 return s.substring((0),index);
@@ -250,16 +250,16 @@ if(cljs.core._EQ_.call(null,length,index)){
 return buffer.toString();
 } else {
 var ch = s.charAt(index);
-var temp__4401__auto___9803 = cljs.core.get.call(null,cmap,ch);
-if(cljs.core.truth_(temp__4401__auto___9803)){
-var replacement_9804 = temp__4401__auto___9803;
-buffer.append([cljs.core.str(replacement_9804)].join(''));
+var temp__4401__auto___9804 = cljs.core.get.call(null,cmap,ch);
+if(cljs.core.truth_(temp__4401__auto___9804)){
+var replacement_9805 = temp__4401__auto___9804;
+buffer.append([cljs.core.str(replacement_9805)].join(''));
 } else {
 buffer.append(ch);
 }
 
-var G__9805 = (index + (1));
-index = G__9805;
+var G__9806 = (index + (1));
+index = G__9806;
 continue;
 }
 break;

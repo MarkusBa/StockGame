@@ -18,7 +18,7 @@
       text))
 
 ;;;;;; state
-(def state (atom {:stocks [{"symbol" "SZG.SG", "name" "SALZGITTER", "exch" "STU", "type" "S", "exchDisp" "Stuttgart", "typeDisp" "Equity"}
+(def state (atom {:query nil :stocks [{"symbol" "SZG.SG", "name" "SALZGITTER", "exch" "STU", "type" "S", "exchDisp" "Stuttgart", "typeDisp" "Equity"}
                            {"symbol" "SZG.MU", "name" "SALZGITTER", "exch" "MUN", "type" "S", "exchDisp" "Munich", "typeDisp" "Equity"}]}))
 
 (defn yahooquery [param]
@@ -29,16 +29,32 @@
 (defn lister [items]
   [:ul
    (for [item items]
-     ^{:key item} [:li (get item "symbol")])])
+     ^{:key item} [:li
+                   [:ul
+                    [:li "Symbol:" (get item "symbol")]
+                    [:li "Name:" (get item "name")]
+                    [:li "Exchange:" (get item "exchDisp")]
+                    [:li "Type:" (get item "typeDisp")]
+                   ]])])
 
 (defn list-of-stocks []
   [:div
    [:h1 "List of stocks"]
    [lister (:stocks @state)]])
 
+(defn atom-input [state]
+  [:input {:type "text"
+           :value (:query @state)
+           :on-change #(let [text (-> % .-target .-value)]
+                         (swap! state assoc :query text)
+                         (yahooquery text))}])
+
 (defn init []
   (r/render-component
+   [:div
+   [atom-input state]
    [list-of-stocks]
+    ]
    (.-body js/document)))
 
 (init)
