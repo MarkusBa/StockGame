@@ -57,7 +57,7 @@
 
 (defn atom-input [state]
   [:input {:type "text"
-           :value (:query @state)
+           ;:value (:query @state)
            :on-blur #(let [text (-> % .-target .-value)]
                          (swap! state assoc :query text)
                          (yahooquery text))}])
@@ -97,7 +97,7 @@
 
 (defn atom-input-stock [state]
   [:input {:type "text"
-           :value (:qstock @state)
+           ;:value (:qstock @state)
            :on-blur #(let [text (-> % .-target .-value)]
                          (swap! state assoc :qstock text)
                          (stockquery text))}])

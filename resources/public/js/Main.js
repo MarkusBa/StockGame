@@ -36733,8 +36733,7 @@ core.start.list_of_stocks = function() {
   core.start.state))], null)], null);
 };
 core.start.atom_input = function(a) {
-  return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "input", "input", 556931961), new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null, "type", "type", 1174270348), "text", new cljs.core.Keyword(null, "value", "value", 305978217), (new cljs.core.Keyword(null, "query", "query", -1288509510)).cljs$core$IFn$_invoke$arity$1(cljs.core.deref.call(null, a)), new cljs.core.Keyword(null, "on-blur", "on-blur", 814300747), 
-  function(b) {
+  return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "input", "input", 556931961), new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "type", "type", 1174270348), "text", new cljs.core.Keyword(null, "on-blur", "on-blur", 814300747), function(b) {
     b = b.target.value;
     cljs.core.swap_BANG_.call(null, a, cljs.core.assoc, new cljs.core.Keyword(null, "query", "query", -1288509510), b);
     return core.start.yahooquery.call(null, b);
@@ -36794,8 +36793,7 @@ core.start.list_of_stock = function() {
   core.start.state))], null)], null);
 };
 core.start.atom_input_stock = function(a) {
-  return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "input", "input", 556931961), new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null, "type", "type", 1174270348), "text", new cljs.core.Keyword(null, "value", "value", 305978217), (new cljs.core.Keyword(null, "qstock", "qstock", 337808358)).cljs$core$IFn$_invoke$arity$1(cljs.core.deref.call(null, a)), new cljs.core.Keyword(null, "on-blur", "on-blur", 814300747), 
-  function(b) {
+  return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "input", "input", 556931961), new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "type", "type", 1174270348), "text", new cljs.core.Keyword(null, "on-blur", "on-blur", 814300747), function(b) {
     b = b.target.value;
     cljs.core.swap_BANG_.call(null, a, cljs.core.assoc, new cljs.core.Keyword(null, "qstock", "qstock", 337808358), b);
     return core.start.stockquery.call(null, b);
