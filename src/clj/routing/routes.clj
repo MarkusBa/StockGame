@@ -7,6 +7,7 @@
             [compojure.route :as route]
             [compojure.handler :as handler]
             [clojure.data.json :as json]
+            [clojure.string :as cljstr]
             [clojure.tools.logging :as log]
             [database.connect :as db])
   (:import (java.sql Date)))
@@ -28,9 +29,10 @@
   (generate-response (db/get-items )))
 
 (defn queryyahoo [searchstring]
-  (log/error "searchstring is" searchstring)
-  (:body (client/get (str "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=" searchstring
-                                  "&callback=YAHOO.Finance.SymbolSuggest.ssCallback"))))
+  (let [res (cljstr/replace (:body (client/get (str "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=" searchstring
+                                  "&callback=YAHOO.Finance.SymbolSuggest.ssCallback")))
+                  #"YAHOO.Finance.SymbolSuggest.ssCallback\((.*?)\)" "$1")]
+    res))
 
 (defn exquery [{:keys [query] :as params}]
   (log/error "query" query)
@@ -48,3 +50,11 @@
 
 (defonce server
   (run-jetty #'app {:port 8080 :join? false}))
+
+(comment
+  (defn queryyahoo [searchstring]
+  (let [res (cljstr/replace (:body (client/get (str "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=" searchstring
+                                  "&callback=YAHOO.Finance.SymbolSuggest.ssCallback")))
+                  "YAHOO.Finance.SymbolSuggest.ssCallback(" "")
+        re (subs res 0 (- (.length res ) 1))]
+    re)))
