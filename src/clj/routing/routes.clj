@@ -40,10 +40,22 @@
 (defn exquery [{:keys [query] :as params}]
   (generate-response (queryyahoo query)))
 
+(defn querystock [symbole]
+  (let [url "http://query.yahooapis.com/v1/public/yql"
+        q-param (str "select * from yahoo.finance.quotes where symbol in(\"" symbole "\")"  )
+        env-param "http://datatables.org/alltables.env"
+        format-param "json"]
+    (:body (client/get url {:query-params {"q" q-param "env" env-param "format" format-param}} ))))
+
+(defn exstock [{:keys [symbole] :as params}]
+  (generate-response (querystock symbole)))
+
 (defroutes routes
   (GET "/" [] (index))
   (GET "/query" {params :params}
     (exquery params))
+  (GET "/stock" {params :params}
+    (exstock params))
   (GET "/items" [] (items))
   (route/files "/" {:root "resources/public"}))
 
