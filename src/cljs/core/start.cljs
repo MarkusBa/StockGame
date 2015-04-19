@@ -6,22 +6,55 @@
 
 (enable-console-print!)
 
-(defn init []
-  (r/render-component
-   [list-of-stocks]
-   (.-body js/document)))
 
-
-;;(query "salzgitter")
-
-(go (let [response (<! (http/get "query" {:edn-params {:query "salzgitter"}}))]
+(go (let [response (<! (http/get "query" {:query-params {"query" "salzgitter"}}))]
       (println (:status response))
       (println (:body response))))
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ;;(init)
+
+(defn init []
+  (r/render-component
+   [list-of-stocks]
+   (.-body js/document)))
+
 
 
 
