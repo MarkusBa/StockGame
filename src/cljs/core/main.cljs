@@ -19,7 +19,7 @@
   (let [temp1 (:body response)
         temp (transit/read json-reader temp1)
         text (get (get (get temp "query") "results")"quote")]
-      (vector text)))
+      (if (vector? text) text (vector text))))
 
 ;;;;;; state
 (def state (atom {:qstock nil :stock nil :query nil :stocks [{"symbol" "SZG.SG", "name" "SALZGITTER", "exch" "STU", "type" "S", "exchDisp" "Stuttgart", "typeDisp" "Equity"}
