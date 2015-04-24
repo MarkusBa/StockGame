@@ -1,4 +1,4 @@
-(ns core.start
+(ns core.main
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [reagent.core :as r :refer [atom]]
             [cognitect.transit :as transit]
@@ -7,35 +7,31 @@
 
 (enable-console-print!)
 
-(def rdr (transit/reader :json))
+(def json-reader (transit/reader :json))
 
-(defn read-query [response]
+(defn read-symbol-response [response]
   (let [temp1 (:body response)
-        nthg  (println temp1)
-        temp (transit/read rdr temp1)
+        temp (transit/read json-reader temp1)
         text (get (get temp "ResultSet") "Result")]
-     (println text)
       text))
 
-(defn read-stocks [response]
+(defn read-stock-response [response]
   (let [temp1 (:body response)
-        nthg  (println temp1)
-        temp (transit/read rdr temp1)
+        temp (transit/read json-reader temp1)
         text (get (get (get temp "query") "results")"quote")]
-     (println text)
       (vector text)))
 
 ;;;;;; state
 (def state (atom {:qstock nil :stock nil :query nil :stocks [{"symbol" "SZG.SG", "name" "SALZGITTER", "exch" "STU", "type" "S", "exchDisp" "Stuttgart", "typeDisp" "Equity"}
                            {"symbol" "SZG.MU", "name" "SALZGITTER", "exch" "MUN", "type" "S", "exchDisp" "Munich", "typeDisp" "Equity"}]}))
 
-(defn yahooquery [param]
-  (go (let [response (<! (http/get "query" {:query-params {"query" param}}))]
-        (swap! state assoc :stocks (read-query response)))))
+(defn symbolquery [param]
+  (go (let [response (<! (http/get "symbol" {:query-params {"query" param}}))]
+        (swap! state assoc :stocks (read-symbol-response response)))))
 
 (defn stockquery [param]
   (go (let [response (<! (http/get "stock" {:query-params {"symbole" param}}))]
-        (swap! state assoc :stock (read-stocks response)))))
+        (swap! state assoc :stock (read-stock-response response)))))
 
 ;;; symbols
 
@@ -60,7 +56,7 @@
            ;:value (:query @state)
            :on-blur #(let [text (-> % .-target .-value)]
                          (swap! state assoc :query text)
-                         (yahooquery text))}])
+                         (symbolquery text))}])
 
 ;;; details for single stock
 

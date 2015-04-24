@@ -9,16 +9,10 @@
             [clojure.data.json :as json]
             [clojure.string :as cljstr]
             [clojure.tools.logging :as log]
-            [database.connect :as db])
-  (:import (java.sql Date)))
+            [database.connect :as db]))
 
 (defn index []
   (file-response "public/html/index.html" {:root "resources"}))
-
-(defn date-writer [key value]
-  (if (= key :ts)
-    (str (java.sql.Date. (.getTime value)))
-    value))
 
 (defn generate-response [data & [status]]
   {:status (or status 200)
@@ -28,34 +22,33 @@
 (defn items []
   (generate-response (db/get-items )))
 
-(defn queryyahoo [searchstring]
+(defn symbol-from-yahoo [searchstring]
   (let [res (cljstr/replace (:body (client/get (str "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=" searchstring
                                   "&callback=YAHOO.Finance.SymbolSuggest.ssCallback")))
                   #"YAHOO.Finance.SymbolSuggest.ssCallback\((.*?)\)" "$1")
         text res]
-        ;;text (get (get (json/read-str res) "ResultSet") "Result")]
         (log/info "queryyahoo: " text)
         text))
 
-(defn exquery [{:keys [query] :as params}]
-  (generate-response (queryyahoo query)))
+(defn getsymbol [{:keys [query] :as params}]
+  (generate-response (symbol-from-yahoo query)))
 
-(defn querystock [symbole]
+(defn stock-from-yahoo [symbole]
   (let [url "http://query.yahooapis.com/v1/public/yql"
         q-param (str "select * from yahoo.finance.quotes where symbol in(\"" symbole "\")"  )
         env-param "http://datatables.org/alltables.env"
         format-param "json"]
     (:body (client/get url {:query-params {"q" q-param "env" env-param "format" format-param}} ))))
 
-(defn exstock [{:keys [symbole] :as params}]
-  (generate-response (querystock symbole)))
+(defn getstock [{:keys [symbole] :as params}]
+  (generate-response (stock-from-yahoo symbole)))
 
 (defroutes routes
   (GET "/" [] (index))
-  (GET "/query" {params :params}
-    (exquery params))
+  (GET "/symbol" {params :params}
+    (getsymbol params))
   (GET "/stock" {params :params}
-    (exstock params))
+    (getstock params))
   (GET "/items" [] (items))
   (route/files "/" {:root "resources/public"}))
 
