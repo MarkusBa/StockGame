@@ -30,7 +30,7 @@
         (swap! state assoc :stocks (read-symbol-response response)))))
 
 (defn stockquery [param]
-  (go (let [response (<! (http/get "stock" {:query-params {"symbole" param}}))]
+  (go (let [response (<! (http/get "stock" {:query-params {"companyname" param}}))]
         (swap! state assoc :stock (read-stock-response response)))))
 
 ;;; symbols

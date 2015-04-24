@@ -1,5 +1,6 @@
 - enable history for postgres
 - fetch data from database
 - enable purescript
+- apply style guide
 
 

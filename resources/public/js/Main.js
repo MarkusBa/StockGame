@@ -36670,7 +36670,7 @@ core.main.stockquery = function(a) {
           return function(b) {
             var c = b[1];
             if (1 === c) {
-              var c = [new cljs.core.Keyword(null, "query-params", "query-params", 900640534)], d = [cljs.core.PersistentHashMap.fromArrays(["symbole"], [a])], c = cljs.core.PersistentHashMap.fromArrays(c, d), c = cljs_http.client.get.call(null, "stock", c);
+              var c = [new cljs.core.Keyword(null, "query-params", "query-params", 900640534)], d = [cljs.core.PersistentHashMap.fromArrays(["companyname"], [a])], c = cljs.core.PersistentHashMap.fromArrays(c, d), c = cljs_http.client.get.call(null, "stock", c);
               return cljs.core.async.impl.ioc_helpers.take_BANG_.call(null, b, 2, c);
             }
             return 2 === c ? (c = core.main.read_stock_response.call(null, b[2]), c = cljs.core.swap_BANG_.call(null, core.main.state, cljs.core.assoc, new cljs.core.Keyword(null, "stock", "stock", -877288674), c), cljs.core.async.impl.ioc_helpers.return_chan.call(null, b, c)) : null;
