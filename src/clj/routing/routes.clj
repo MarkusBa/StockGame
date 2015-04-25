@@ -56,7 +56,7 @@
 
 (defn items [{:keys [idplayer] :as params}]
   (let [itemsmap (db/get-items idplayer)
-        symbols-to-prices (into {} (prices-from-yahoo (filter #(not (= % "CASH")) (map :symbol itemsmap)) true))
+        symbols-to-prices (if (= 1 (count itemsmap)) {} (into {} (prices-from-yahoo (filter #(not (= % "CASH")) (map :symbol itemsmap)) true)))
         itemsrich (map #(assoc % :currentprice (get symbols-to-prices (:symbol %))) itemsmap)]
   (generate-response (json/write-str itemsrich :value-fn date-writer))))
 
