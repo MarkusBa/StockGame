@@ -6,7 +6,13 @@
   [:.content {:margin-left "20px" :margin-top "40px"}])
 
 (def ul
-  [:ul {:list-style-type "none"}])
+  [:.datalist {:list-style-type "none"}])
+
+(def left
+  [:.left {:float "left"}])
+
+(def right
+  [:.right {:float "right"}])
 
 (def navelement
   [:.navelement
@@ -20,4 +26,6 @@
    {:pretty-print true :output-to "resources/public/main.css"}
    ul
    content
+   left
+   right
    navelement))

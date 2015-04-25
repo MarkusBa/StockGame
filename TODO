@@ -2,6 +2,6 @@
 - fetch data from database
 - enable purescript
 - apply style guide
-- memory leak?
+- unit tests
 
 
