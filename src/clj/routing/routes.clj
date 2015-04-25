@@ -5,12 +5,17 @@
             [clj-http.client :as client]
             [compojure.core :refer [defroutes GET PUT DELETE POST]]
             [compojure.route :as route]
+            [clojure.test :as ct :refer [is with-test]]
             [compojure.handler :as handler]
             [clojure.data.json :as json]
+            [clojure.set :as cljset :refer [subset?]]
             [clojure.string :as cljstr]
             [clojure.tools.logging :as log]
             [database.connect :as db])
   (:import (java.sql Date)))
+
+;;(require '(require '[clojure.test :as ct])
+;;(ct/run-tests 'routing.routes)
 
 (defn date-writer [key value]
   (if (= key :ts)
@@ -46,13 +51,16 @@
     (:body response)))
 
 ;;(rt/prices-from-yahoo ["YHOO" "PAH3.DE"]  true)
-(defn prices-from-yahoo [symbole sell]
-  (let [yhoostocks (get (get (get (json/read-str (stock-from-yahoo symbole))"query") "results")"quote")
-        stocks (if (and (not (nil? symbole)) (= 1 (count symbole))) (vector yhoostocks) yhoostocks)
-        prices (if sell
-                 (map #(vector (get % "symbol") (get % "Bid")) stocks)
-                 (map #(vector (get % "symbol") (get % "Ask")) stocks))]
-     prices))
+(with-test
+  (defn prices-from-yahoo [symbole sell]
+    (let [yhoostocks (get (get (get (json/read-str (stock-from-yahoo symbole))"query") "results")"quote")
+          stocks (if (and (not (nil? symbole)) (= 1 (count symbole))) (vector yhoostocks) yhoostocks)
+          prices (if sell
+                   (map #(vector (get % "symbol") (get % "Bid")) stocks)
+                   (map #(vector (get % "symbol") (get % "Ask")) stocks))]
+       prices))
+  (is (= #{"YHOO" "PAH3.DE"} (reduce #(conj %1 (first %2)) #{} (prices-from-yahoo ["YHOO" "PAH3.DE"]  true))))
+  (is (= "YHOO" (first (first (prices-from-yahoo ["YHOO"]  false))))))
 
 (defn items [{:keys [idplayer] :as params}]
   (let [itemsmap (db/get-items idplayer)
