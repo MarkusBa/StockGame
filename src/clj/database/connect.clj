@@ -9,6 +9,7 @@
 (ann db-spec Map)
 (def db-spec (cf/load-config "resources/config.clj"))
 
+(ann ^:no-check db Map)
 (defdb db (postgres db-spec))
 
 (defentity item)
