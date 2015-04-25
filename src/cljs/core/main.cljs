@@ -49,17 +49,17 @@
       (if (vector? text) text (vector text))))
 
 ;; state
-(def state (atom {:qstock nil :stock nil :query nil :stocks [{"symbol" "SZG.SG", "name" "SALZGITTER", "exch" "STU", "type" "S", "exchDisp" "Stuttgart", "typeDisp" "Equity"}
+(def state (atom {:input-stock nil :stocks nil :input-symbol nil :symbols [{"symbol" "SZG.SG", "name" "SALZGITTER", "exch" "STU", "type" "S", "exchDisp" "Stuttgart", "typeDisp" "Equity"}
                            {"symbol" "SZG.MU", "name" "SALZGITTER", "exch" "MUN", "type" "S", "exchDisp" "Munich", "typeDisp" "Equity"}]}))
 
 ;; queries
 (defn symbolquery [param]
   (go (let [response (<! (http/get "symbol" {:query-params {"query" param}}))]
-        (swap! state assoc :stocks (read-symbol-response response)))))
+        (swap! state assoc :symbols (read-symbol-response response)))))
 
 (defn stockquery [param]
   (go (let [response (<! (http/get "stock" {:query-params {"companyname" param}}))]
-        (swap! state assoc :stock (read-stock-response response)))))
+        (swap! state assoc :stocks (read-stock-response response)))))
 
 ;; ----components-----
 
@@ -89,13 +89,13 @@
 
 (defn symbols []
   [:div
-     [atom-input state :query symbolquery]
-     [listview "Symbols" :stocks symbolKeyVals]])
+     [atom-input state :input-symbol symbolquery]
+     [listview "Symbols" :symbols symbolKeyVals]])
 
 (defn stocks []
   [:div
-    [atom-input state :qstock stockquery]
-    [listview "Stock" :stock stockKeyVals]])
+    [atom-input state :input-stock stockquery]
+    [listview "Stock" :stocks stockKeyVals]])
 
 (declare content)
 

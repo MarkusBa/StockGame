@@ -36573,7 +36573,7 @@ core.main.read_stock_response = function(a) {
   a = cljs.core.get.call(null, cljs.core.get.call(null, cljs.core.get.call(null, a, "query"), "results"), "quote");
   return cljs.core.vector_QMARK_.call(null, a) ? a : new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [a], null);
 };
-core.main.state = reagent.core.atom.call(null, new cljs.core.PersistentArrayMap(null, 4, [new cljs.core.Keyword(null, "qstock", "qstock", 337808358), null, new cljs.core.Keyword(null, "stock", "stock", -877288674), null, new cljs.core.Keyword(null, "query", "query", -1288509510), null, new cljs.core.Keyword(null, "stocks", "stocks", -617352902), new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentArrayMap(null, 6, "symbol SZG.SG name SALZGITTER exch STU type S exchDisp Stuttgart typeDisp Equity".split(" "), 
+core.main.state = reagent.core.atom.call(null, new cljs.core.PersistentArrayMap(null, 4, [new cljs.core.Keyword(null, "input-stock", "input-stock", -2051257472), null, new cljs.core.Keyword(null, "stocks", "stocks", -617352902), null, new cljs.core.Keyword(null, "input-symbol", "input-symbol", 586647800), null, new cljs.core.Keyword(null, "symbols", "symbols", 1211743), new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentArrayMap(null, 6, "symbol SZG.SG name SALZGITTER exch STU type S exchDisp Stuttgart typeDisp Equity".split(" "), 
 null), new cljs.core.PersistentArrayMap(null, 6, "symbol SZG.MU name SALZGITTER exch MUN type S exchDisp Munich typeDisp Equity".split(" "), null)], null)], null));
 core.main.symbolquery = function(a) {
   var b = cljs.core.async.chan.call(null, 1);
@@ -36635,7 +36635,7 @@ core.main.symbolquery = function(a) {
               var c = [new cljs.core.Keyword(null, "query-params", "query-params", 900640534)], d = [cljs.core.PersistentHashMap.fromArrays(["query"], [a])], c = cljs.core.PersistentHashMap.fromArrays(c, d), c = cljs_http.client.get.call(null, "symbol", c);
               return cljs.core.async.impl.ioc_helpers.take_BANG_.call(null, b, 2, c);
             }
-            return 2 === c ? (c = core.main.read_symbol_response.call(null, b[2]), c = cljs.core.swap_BANG_.call(null, core.main.state, cljs.core.assoc, new cljs.core.Keyword(null, "stocks", "stocks", -617352902), c), cljs.core.async.impl.ioc_helpers.return_chan.call(null, b, c)) : null;
+            return 2 === c ? (c = core.main.read_symbol_response.call(null, b[2]), c = cljs.core.swap_BANG_.call(null, core.main.state, cljs.core.assoc, new cljs.core.Keyword(null, "symbols", "symbols", 1211743), c), cljs.core.async.impl.ioc_helpers.return_chan.call(null, b, c)) : null;
           };
         }(b), b);
       }(), e = function() {
@@ -36708,7 +36708,7 @@ core.main.stockquery = function(a) {
               var c = [new cljs.core.Keyword(null, "query-params", "query-params", 900640534)], d = [cljs.core.PersistentHashMap.fromArrays(["companyname"], [a])], c = cljs.core.PersistentHashMap.fromArrays(c, d), c = cljs_http.client.get.call(null, "stock", c);
               return cljs.core.async.impl.ioc_helpers.take_BANG_.call(null, b, 2, c);
             }
-            return 2 === c ? (c = core.main.read_stock_response.call(null, b[2]), c = cljs.core.swap_BANG_.call(null, core.main.state, cljs.core.assoc, new cljs.core.Keyword(null, "stock", "stock", -877288674), c), cljs.core.async.impl.ioc_helpers.return_chan.call(null, b, c)) : null;
+            return 2 === c ? (c = core.main.read_stock_response.call(null, b[2]), c = cljs.core.swap_BANG_.call(null, core.main.state, cljs.core.assoc, new cljs.core.Keyword(null, "stocks", "stocks", -617352902), c), cljs.core.async.impl.ioc_helpers.return_chan.call(null, b, c)) : null;
           };
         }(b), b);
       }(), e = function() {
@@ -36843,12 +36843,12 @@ core.main.atom_input = function(a, b, c) {
   }], null)], null);
 };
 core.main.symbols = function() {
-  return new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div", "div", 1057191632), new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [core.main.atom_input, core.main.state, new cljs.core.Keyword(null, "query", "query", -1288509510), core.main.symbolquery], null), new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [core.main.listview, "Symbols", new cljs.core.Keyword(null, 
-  "stocks", "stocks", -617352902), core.main.symbolKeyVals], null)], null);
+  return new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div", "div", 1057191632), new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [core.main.atom_input, core.main.state, new cljs.core.Keyword(null, "input-symbol", "input-symbol", 586647800), core.main.symbolquery], null), new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [core.main.listview, "Symbols", new cljs.core.Keyword(null, 
+  "symbols", "symbols", 1211743), core.main.symbolKeyVals], null)], null);
 };
 core.main.stocks = function() {
-  return new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div", "div", 1057191632), new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [core.main.atom_input, core.main.state, new cljs.core.Keyword(null, "qstock", "qstock", 337808358), core.main.stockquery], null), new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [core.main.listview, "Stock", new cljs.core.Keyword(null, "stock", 
-  "stock", -877288674), core.main.stockKeyVals], null)], null);
+  return new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div", "div", 1057191632), new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [core.main.atom_input, core.main.state, new cljs.core.Keyword(null, "input-stock", "input-stock", -2051257472), core.main.stockquery], null), new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [core.main.listview, "Stock", new cljs.core.Keyword(null, 
+  "stocks", "stocks", -617352902), core.main.stockKeyVals], null)], null);
 };
 core.main.render_page = function(a) {
   return reagent.core.render_component.call(null, new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [core.main.content, a], null), document.body);
