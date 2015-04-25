@@ -12,6 +12,7 @@
 (ann ^:no-check korma.db/postgres [Map -> Map])
 (ann ^:no-check korma.db/create-db [Map -> Map])
 (ann ^:no-check korma.db/default-connection [Map -> Map])
+(ann ^:no-check korma.core/create-entity [String -> Map])
 
 (ann db Map)
 (defdb db (postgres db-spec))
