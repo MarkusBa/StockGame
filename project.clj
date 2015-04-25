@@ -15,6 +15,7 @@
                  [org.clojure/clojurescript "0.0-2411"]
                  [fogus/ring-edn "0.2.0"]
                  [reagent "0.5.0"]
+                 [garden "1.2.5"]
                  [clj-http "1.1.0"]
                  [cljs-http "0.1.30"]
                  [com.cognitect/transit-cljs "0.8.207"]

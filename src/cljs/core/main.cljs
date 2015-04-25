@@ -102,12 +102,12 @@
 (defn init []
   (r/render-component
    [:div
-   [atom-input state]
-   [list-of-stocks]
-   [atom-input-stock state]
-   [list-of-stock]
-
-    ]
+    [:div {:style {:float "left"}}
+     [atom-input state]
+     [list-of-stocks]]
+    [:div {:style {:float "right"}}
+     [atom-input-stock state]
+     [list-of-stock]]]
    (.-body js/document)))
 
 (init)
