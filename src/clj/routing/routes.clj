@@ -52,7 +52,9 @@
 (defn prices-from-yahoo [symbole sell]
   (let [yhoostocks (get (get (get (json/read-str (stock-from-yahoo symbole))"query") "results")"quote")
         stocks (if (and (not (nil? symbole)) (= 1 (count symbole))) (vector yhoostocks) yhoostocks)
-        prices (if sell (map #(get % "Bid") stocks) (map #(get % "Ask") stocks))]
+        prices (if sell
+                 (map #(vector (get % "symbol") (get % "Bid")) stocks)
+                 (map #(vector (get % "symbol") (get % "Ask")) stocks))]
      prices))
 
 (defn name->symbols [companyname]
@@ -67,12 +69,12 @@
       (generate-response (stock-from-yahoo actualsymbols))))
 
 (defn order [{:keys [ordersymbol amount idplayer] :as params}]
-  (let [price (first (prices-from-yahoo [ordersymbol] false))]
+  (let [price (second (first (prices-from-yahoo [ordersymbol] false)))]
       (log/info "order: " ordersymbol " " amount " " idplayer)
       (generate-response (db/order ordersymbol (Double/parseDouble amount) (Double/parseDouble price) idplayer))))
 
 (defn sell [{:keys [sellsymbol amount idplayer] :as params}]
-  (let [price (first (prices-from-yahoo [sellsymbol] true))]
+  (let [price (second (first (prices-from-yahoo [sellsymbol] true)))]
       (log/info "sell: " sellsymbol " " amount " " idplayer)
       (generate-response (db/sell sellsymbol (Double/parseDouble amount) (Double/parseDouble price) idplayer))))
 
