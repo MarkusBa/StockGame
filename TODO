@@ -3,5 +3,6 @@
 - enable purescript
 - apply style guide
 - unit tests
+- historize via postgres plugin
 
 
