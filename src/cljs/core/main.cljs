@@ -108,16 +108,23 @@
     [atom-input-stock state]
     [list-of-stocks]])
 
-(defn init []
-  (r/render-component
-   [:div.all
+(defn content [innercontent]
+  [:div.all
      [:div.navigation
+       [:div.navelement "Portfolio"]
+       [:div.navelement {:on-click #(render-page stocks)} "Stocks"]
+       [:div.navelement {:on-click #(render-page symbols)} "Symbols"]
       ]
+     [:br]
      [:div.content
-      [stocks]]]
+      [innercontent]]])
+
+(defn render-page [innercontent]
+  (r/render-component
+   [content innercontent]
      (.-body js/document)))
 
-(init)
+(render-page stocks)
 
 
 

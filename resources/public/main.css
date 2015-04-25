@@ -3,5 +3,13 @@ ul {
 }
 
 .content {
-  margin: 10px;
+  margin-left: 20px;
+  margin-top: 40px;
+}
+
+.navelement {
+  float: left;
+  border: 1px;
+  margin: 5px;
+  font-weight: bold;
 }
