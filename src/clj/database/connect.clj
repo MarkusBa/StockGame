@@ -1,5 +1,6 @@
 (ns database.connect
   (:require [config.parse :as cf]
+            [clojure.tools.logging :as log]
             [korma.core :as k]
             [korma.db :refer [defdb postgres]]))
 
@@ -9,6 +10,6 @@
 
 (k/defentity item)
 
-(defn get-items [idPlayer]
- (k/select item
-   (k/where {:idPlayer idPlayer})))
+(defn get-items [idplayer]
+  (k/select item
+    (k/where {:idplayer (Integer/parseInt idplayer)})))

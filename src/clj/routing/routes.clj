@@ -9,7 +9,13 @@
             [clojure.data.json :as json]
             [clojure.string :as cljstr]
             [clojure.tools.logging :as log]
-            [database.connect :as db]))
+            [database.connect :as db])
+  (:import (java.sql Date)))
+
+(defn date-writer [key value]
+  (if (= key :ts)
+    (str (java.sql.Date. (.getTime value)))
+    value))
 
 (defn index []
   (file-response "public/html/index.html" {:root "resources"}))
@@ -19,8 +25,8 @@
    :headers {"Content-Type" "application/edn"}
    :body (pr-str data)})
 
-(defn items [{:keys [idPlayer] :as params}]
-  (generate-response (db/get-items idPlayer)))
+(defn items [{:keys [idplayer] :as params}]
+  (generate-response (json/write-str (db/get-items idplayer) :value-fn date-writer)))
 
 (defn symbol-from-yahoo [searchstring]
   (let [response (cljstr/replace (:body (client/get (str "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=" searchstring
