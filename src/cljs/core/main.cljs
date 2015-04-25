@@ -85,6 +85,12 @@
     (go (let [response (<! (http/post "order" {:form-params {"idplayer" param "ordersymbol" ordersymbol "amount" orderamount}}))]
         (println response)))))
 
+(defn sellquery [param]
+  (let [sellsymbol (:sellsymbol @state)
+        sellamount (:sellamount @state)]
+    (go (let [response (<! (http/post "sell" {:form-params {"idplayer" param "sellsymbol" sellsymbol "amount" sellamount}}))]
+        (println response)))))
+
 (defn symbolquery [param]
   (go (let [response (<! (http/get "symbol" {:query-params {"query" param}}))]
         (swap! state assoc :symbols (read-symbol-response response)))))
@@ -135,7 +141,7 @@
     [atom-input-blur state :input-stock stockquery]
     [listview "Stock" :stocks stockKeyVals]])
 
-(defn buy []
+(defn order []
   [:div
    [:h1 "Order"]
    [:h2 "Symbol"] [atom-input state :ordersymbol]
@@ -143,9 +149,18 @@
    [:input {:type "button" :value "Commit"
             :on-click #(orderquery idplayer)}]])
 
+(defn sell []
+  [:div
+   [:h1 "Sell"]
+   [:h2 "Symbol"] [atom-input state :sellsymbol]
+   [:h2 "Amount"] [atom-input state :sellamount]
+   [:input {:type "button" :value "Commit"
+            :on-click #(sellquery idplayer)}]])
+
 (defn items []
   [:div
-    [buy]
+    [order]
+    [sell]
     [listview "Items" :items itemKeyVals]])
 
 (declare content)

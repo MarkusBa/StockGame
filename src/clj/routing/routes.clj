@@ -82,7 +82,7 @@
     (getsymbol params))
   (POST "/order" {params :params}
     (order params))
-  (GET "/sell" {params :params}
+  (POST "/sell" {params :params}
     (sell params))
   (GET "/stock" {params :params}
     (getstock params))
