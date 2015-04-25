@@ -48,6 +48,13 @@
     (log/info "stock-from-yahoo:" response)
     (:body response)))
 
+;;(rt/prices-from-yahoo ["YHOO" "PAH3.DE"]  true)
+(defn prices-from-yahoo [symbole sell]
+  (let [yhoostocks (get (get (get (json/read-str (stock-from-yahoo symbole))"query") "results")"quote")
+        stocks (if (and (not (nil? symbole)) (= 1 (count symbole))) (vector yhoostocks) yhoostocks)
+        prices (if sell (map #(get % "Bid") stocks) (map #(get % "Ask") stocks))]
+     prices))
+
 (defn name->symbols [companyname]
   (log/info "name->symbols " companyname)
   (map #(get % "symbol") (get (get (json/read-str (symbol-from-yahoo companyname)) "ResultSet") "Result")))
