@@ -1,12 +1,12 @@
 (ns database.connect
   (:require [config.parse :as cf]
-            [clojure.core.typed :refer [ann Map Any] :as t]
+            [clojure.core.typed :refer [ann Map] :as t]
             [clojure.tools.logging :as log]
             [korma.core :as k :refer [defentity delete select where values insert update fields set-fields]]
             [korma.db :refer [defdb postgres transaction]])
   (:import (java.sql Timestamp)))
 
-(ann db-spec [Map])
+(ann db-spec Map)
 (def db-spec (cf/load-config "resources/config.clj"))
 
 (defdb db (postgres db-spec))

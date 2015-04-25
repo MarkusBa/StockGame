@@ -1,6 +1,6 @@
 (ns config.parse
   (:require [clojure.java.io :as io]
-            [clojure.core.typed :refer [ann] :as t])
+            [clojure.core.typed :refer [ann Map Any] :as t])
   (:import (java.io PushbackReader BufferedReader)
            (java.net Socket)))
 
