@@ -27,7 +27,7 @@
             [lein-deps-tree "0.1.2"]]
   :java-source-paths ["src/java"]
   :resource-paths ["resources"]
-  :core.typed {:check [config.parse database.connect]}
+  :core.typed {:check [config.parse]}
   :source-paths ["src/clj" "src/cljs"]
   :cljsbuild
       {:builds [{
