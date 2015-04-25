@@ -13,6 +13,7 @@
   (partition 2 ["Symbol:" "symbol"
    "Amount:" "amount"
    "Price:" "price"
+   "Current price:" "currentprice"
    "Date:" "ts"]))
 
 (def symbolKeyVals

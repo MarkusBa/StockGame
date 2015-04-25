@@ -25,9 +25,6 @@
    :headers {"Content-Type" "application/json"}
    :body (pr-str data)})
 
-(defn items [{:keys [idplayer] :as params}]
-  (generate-response (json/write-str (db/get-items idplayer) :value-fn date-writer)))
-
 (defn symbol-from-yahoo [searchstring]
   (let [response (cljstr/replace (:body (client/get (str "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=" searchstring
                                   "&callback=YAHOO.Finance.SymbolSuggest.ssCallback")))
@@ -56,6 +53,12 @@
                  (map #(vector (get % "symbol") (get % "Bid")) stocks)
                  (map #(vector (get % "symbol") (get % "Ask")) stocks))]
      prices))
+
+(defn items [{:keys [idplayer] :as params}]
+  (let [itemsmap (db/get-items idplayer)
+        symbols-to-prices (into {} (prices-from-yahoo (filter #(not (= % "CASH")) (map :symbol itemsmap)) true))
+        itemsrich (map #(assoc % :currentprice (get symbols-to-prices (:symbol %))) itemsmap)]
+  (generate-response (json/write-str itemsrich :value-fn date-writer))))
 
 (defn name->symbols [companyname]
   (log/info "name->symbols " companyname)
