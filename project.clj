@@ -12,7 +12,7 @@
                  [com.theoryinpractise.frege/frege "3.21.586-g026e8d7"]
                  [ch.qos.logback/logback-classic "1.1.1"]
                  [org.clojure/tools.logging "0.2.3"]
-                 [org.clojure/clojurescript "0.0-2411"]
+                 [org.clojure/clojurescript "0.0-2268"]
                  [fogus/ring-edn "0.2.0"]
                  [reagent "0.5.0"]
                  [garden "1.2.5"]

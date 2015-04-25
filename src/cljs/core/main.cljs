@@ -42,6 +42,7 @@
    "PEGRatio:" "PEGRatio"
    "ExDividendDate:" "ExDividendDate"]))
 
+
 ;;TODO
 (def idplayer 1)
 
