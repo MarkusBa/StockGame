@@ -19,8 +19,8 @@
    :headers {"Content-Type" "application/edn"}
    :body (pr-str data)})
 
-(defn items []
-  (generate-response (db/get-items )))
+(defn items [{:keys [idPlayer] :as params}]
+  (generate-response (db/get-items idPlayer)))
 
 (defn symbol-from-yahoo [searchstring]
   (let [response (cljstr/replace (:body (client/get (str "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query=" searchstring
@@ -54,7 +54,7 @@
       (generate-response (stock-from-yahoo actualsymbols))))
 
 (defroutes routes
-  (GET "/" [] (index))
+  (GET "/" {params :params} (index params))
   (GET "/symbol" {params :params}
     (getsymbol params))
   (GET "/stock" {params :params}

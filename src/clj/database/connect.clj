@@ -9,5 +9,6 @@
 
 (k/defentity item)
 
-(defn get-items []
- (k/select item))
+(defn get-items [idPlayer]
+ (k/select item
+   (k/where {:idPlayer idPlayer})))

@@ -1,22 +1,24 @@
 --createdb stock
 --psql -d stock
 
-CREATE TABLE item (
+CREATE TABLE player (
   id bigserial primary key,
   name varchar(255)  NOT NULL,
-  description TEXT,
-  x integer,
-  y integer,
-  id_parent bigserial references item (id) ON DELETE CASCADE ,
-  filename varchar(255) DEFAULT NULL,
-  theblop BYTEA,
-  ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  deleted boolean
+  email varchar(255)  NOT NULL
+);
+
+CREATE TABLE item (
+  id bigserial primary key,
+  symbol varchar(255)  NOT NULL,
+  amount integer,
+  price integer,
+  idPlayer bigserial references player (id) ON DELETE CASCADE,
+  ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX ts_idx ON item (ts);
 
-
 -- Inserts
-insert into item values (1, 'root', 'The root of all items', 0, 0, 1, NULL, NULL, now(), false);
+insert into player values (1, 'test', 'test@test.com');
+insert into item values (1, 'CASH', 10000, 1, 1, now());
 
