@@ -21,11 +21,11 @@
                   (where {:idplayer (Integer/parseInt ~idplayer#)
                           :symbol   ~ordersymbol#})))))
 
-(defmacro change-position [newamount change-symbol idplayer]
+(defmacro change-position [newamount# change-symbol# idplayer#]
     `(update item
-      (set-fields {:amount ~newamount})
-      (where {:idplayer (Integer/parseInt ~idplayer)
-                          :symbol   ~change-symbol})))
+      (set-fields {:amount ~newamount#})
+      (where {:idplayer (Integer/parseInt ~idplayer#)
+                          :symbol   ~change-symbol#})))
 
 
 ;; (db/order "YHOO" 2 44.52 "1")
