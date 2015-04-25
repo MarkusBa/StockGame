@@ -54,12 +54,12 @@
       (generate-response (stock-from-yahoo actualsymbols))))
 
 (defroutes routes
-  (GET "/" {params :params} (index params))
+  (GET "/" [] (index))
   (GET "/symbol" {params :params}
     (getsymbol params))
   (GET "/stock" {params :params}
     (getstock params))
-  (GET "/items" [] (items))
+  (GET "/items" {params :params} (items params))
   (route/files "/" {:root "resources/public"}))
 
 (def app

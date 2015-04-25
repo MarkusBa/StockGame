@@ -36795,8 +36795,9 @@ core.main.atom_input_stock = function(a) {
   }], null)], null);
 };
 core.main.init = function() {
-  return reagent.core.render_component.call(null, new cljs.core.PersistentVector(null, 5, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div", "div", 1057191632), new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [core.main.atom_input, core.main.state], null), new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [core.main.list_of_stocks], null), new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, 
-  [core.main.atom_input_stock, core.main.state], null), new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [core.main.list_of_stock], null)], null), document.body);
+  return reagent.core.render_component.call(null, new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div", "div", 1057191632), new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div", "div", 1057191632), new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null, "style", "style", -496642736), new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null, "float", 
+  "float", -1732389368), "left"], null)], null), new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [core.main.atom_input, core.main.state], null), new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [core.main.list_of_stocks], null)], null), new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "div", "div", 1057191632), new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null, 
+  "style", "style", -496642736), new cljs.core.PersistentArrayMap(null, 1, [new cljs.core.Keyword(null, "float", "float", -1732389368), "right"], null)], null), new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [core.main.atom_input_stock, core.main.state], null), new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [core.main.list_of_stock], null)], null)], null), document.body);
 };
 core.main.init.call(null);
 
