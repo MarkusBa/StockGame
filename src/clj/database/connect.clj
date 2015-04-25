@@ -9,7 +9,11 @@
 (ann db-spec Map)
 (def db-spec (cf/load-config "resources/config.clj"))
 
-(ann ^:no-check db Map)
+(ann ^:no-check korma.db/postgres [Map -> Map])
+(ann ^:no-check korma.db/create-db [Map -> Map])
+(ann ^:no-check korma.db/default-connection [Map -> Map])
+
+(ann db Map)
 (defdb db (postgres db-spec))
 
 (defentity item)
