@@ -66,10 +66,17 @@
       (log/info "actualsymbols: " actualsymbols)
       (generate-response (stock-from-yahoo actualsymbols))))
 
+(defn order [{:keys [ordersymbol amount idplayer] :as params}]
+  (let [price (first (prices-from-yahoo [ordersymbol] false))]
+      (log/info "order: " ordersymbol " " amount " " idplayer)
+      (generate-response (db/order ordersymbol (Double/parseDouble amount) (Double/parseDouble price) idplayer))))
+
 (defroutes routes
   (GET "/" [] (index))
   (GET "/symbol" {params :params}
     (getsymbol params))
+  (GET "/order" {params :params}
+    (order params))
   (GET "/stock" {params :params}
     (getstock params))
   (GET "/items" {params :params} (items params))
