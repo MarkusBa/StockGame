@@ -41,6 +41,9 @@
    "PEGRatio:" "PEGRatio"
    "ExDividendDate:" "ExDividendDate"]))
 
+;;TODO
+(def idplayer 1)
+
 (defn read-items-response [response]
   (let [temp1 (:body response)
         temp (transit/read json-reader temp1)]
@@ -60,8 +63,10 @@
       (if (vector? text) text (vector text))))
 
 ;; state
-(def state (atom {:order-symbol nil
-                  :order-quantity nil
+(def state (atom {:ordersymbol nil
+                  :orderamount nil
+                  :sellsymbol nil
+                  :sellamount nil
                   :items nil
                   :input-stock nil
                   :stocks nil
@@ -73,6 +78,12 @@
 (defn itemquery [param]
   (go (let [response (<! (http/get "items" {:query-params {"idplayer" param}}))]
         (swap! state assoc :items (read-items-response response)))))
+
+(defn orderquery [param]
+  (let [ordersymbol (:ordersymbol @state)
+        orderamount (:orderamount @state)]
+    (go (let [response (<! (http/post "order" {:form-params {"idplayer" param "ordersymbol" ordersymbol "amount" orderamount}}))]
+        (println response)))))
 
 (defn symbolquery [param]
   (go (let [response (<! (http/get "symbol" {:query-params {"query" param}}))]
@@ -101,25 +112,40 @@
    [:h1 listname]
    [lister (listkeyword @state) keyVals]])
 
-(defn atom-input [state atomkeyword queryfunction]
+(defn atom-input-blur [state atomkeyword queryfunction]
   [:input {:type "text"
            ;:value (:qstock @state)
            :on-blur #(let [text (-> % .-target .-value)]
                          (swap! state assoc atomkeyword text)
                          (queryfunction text))}])
 
+(defn atom-input [state atomkeyword]
+  [:input {:type "text"
+           :value (atomkeyword @state)
+           :on-change #(let [text (-> % .-target .-value)]
+                         (swap! state assoc atomkeyword text))}])
+
 (defn symbols []
   [:div
-     [atom-input state :input-symbol symbolquery]
+     [atom-input-blur state :input-symbol symbolquery]
      [listview "Symbols" :symbols symbolKeyVals]])
 
 (defn stocks []
   [:div
-    [atom-input state :input-stock stockquery]
+    [atom-input-blur state :input-stock stockquery]
     [listview "Stock" :stocks stockKeyVals]])
+
+(defn buy []
+  [:div
+   [:h1 "Order"]
+   [:h2 "Symbol"] [atom-input state :ordersymbol]
+   [:h2 "Amount"] [atom-input state :orderamount]
+   [:input {:type "button" :value "Commit"
+            :on-click #(orderquery idplayer)}]])
 
 (defn items []
   [:div
+    [buy]
     [listview "Items" :items itemKeyVals]])
 
 (declare content)
@@ -140,7 +166,7 @@
      [:div.content
       [innercontent]]])
 
-(itemquery 1)
+(itemquery idplayer)
 
 (render-page stocks)
 

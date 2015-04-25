@@ -22,7 +22,7 @@
 
 (defn generate-response [data & [status]]
   {:status (or status 200)
-   :headers {"Content-Type" "application/edn"}
+   :headers {"Content-Type" "application/json"}
    :body (pr-str data)})
 
 (defn items [{:keys [idplayer] :as params}]
@@ -80,7 +80,7 @@
   (GET "/" [] (index))
   (GET "/symbol" {params :params}
     (getsymbol params))
-  (GET "/order" {params :params}
+  (POST "/order" {params :params}
     (order params))
   (GET "/sell" {params :params}
     (sell params))
