@@ -35,7 +35,7 @@
 
 ;;; symbols
 
-(defn stockslister [items]
+(defn symbollister [items]
   [:ul
    (for [item items]
      ^{:key item} [:li
@@ -46,19 +46,19 @@
                     [:li "Type:" (get item "typeDisp")]
                    ]])])
 
-(defn list-of-stocks []
+(defn list-of-symbols []
   [:div
    [:h1 "List of symbols"]
-   [stockslister (:stocks @state)]])
+   [symbollister (:stocks @state)]])
 
-(defn atom-input [state]
+(defn atom-input-symbol [state]
   [:input {:type "text"
            ;:value (:query @state)
            :on-blur #(let [text (-> % .-target .-value)]
                          (swap! state assoc :query text)
                          (symbolquery text))}])
 
-;;; details for single stock
+;;; details for the stocks
 
 (defn stocklister [items]
   [:ul
@@ -86,7 +86,7 @@
 
                    ]])])
 
-(defn list-of-stock []
+(defn list-of-stocks []
   [:div
    [:h1 "Stock"]
    [stocklister (:stock @state)]])
@@ -98,17 +98,24 @@
                          (swap! state assoc :qstock text)
                          (stockquery text))}])
 
+(defn symbols []
+  [:div
+     [atom-input-symbol state]
+     [list-of-symbols]])
+
+(defn stocks []
+  [:div
+    [atom-input-stock state]
+    [list-of-stocks]])
 
 (defn init []
   (r/render-component
-   [:div
-    [:div {:style {:float "left"}}
-     [atom-input state]
-     [list-of-stocks]]
-    [:div {:style {:float "right"}}
-     [atom-input-stock state]
-     [list-of-stock]]]
-   (.-body js/document)))
+   [:div.all
+     [:div.navigation
+      ]
+     [:div.content
+      [stocks]]]
+     (.-body js/document)))
 
 (init)
 
