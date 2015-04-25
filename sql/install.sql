@@ -10,8 +10,8 @@ CREATE TABLE player (
 CREATE TABLE item (
   id SERIAL primary key,
   symbol varchar(255)  NOT NULL,
-  amount integer,
-  price integer,
+  amount NUMERIC,
+  price NUMERIC,
   idplayer SERIAL references player (id) ON DELETE CASCADE,
   ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
