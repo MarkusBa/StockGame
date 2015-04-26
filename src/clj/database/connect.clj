@@ -2,10 +2,12 @@
   (:require [config.parse :as cf]
             [clojure.core.typed :refer [ann List Map Set] :as t]
             [clojure.tools.logging :as log]
+            [clojure.core.contracts :as ccc :refer [with-constraints contract]]
             [clojure.java.jdbc :as jdbc]
+            [clojure.string :as cljstr :refer [blank?]]
             [yesql.core :refer [defquery]])
   (:import (java.sql Timestamp)
-           (java.lang Boolean Double Integer String)))
+           (java.lang RuntimeException Boolean Double Integer String)))
 
 (ann db-spec Map)
 (def db-spec (cf/load-config "resources/config.clj"))
@@ -13,9 +15,19 @@
 (ann ^:no-check get-items-query [Map Integer -> List])
 (defquery get-items-query "sql/select.sql")
 
+(defn string-as-number? [text]
+  (try
+    (do (Integer/parseInt text) true)
+    (catch RuntimeException e false)))
+
 (ann get-items [String -> List])
-(defn get-items [idplayer]
-  (get-items-query db-spec (Integer/parseInt idplayer)))
+(def get-items
+  (with-constraints
+    (fn [idplayer]
+       (get-items-query db-spec (Integer/parseInt idplayer)))
+    (contract getitems
+      "ensures string is given and an Integer"
+      [x] [string-as-number? => (= 1 1)])))
 
 (ann ^:no-check existing-amount [Map Integer String -> List])
 (defquery existing-amount "sql/existingamount.sql")

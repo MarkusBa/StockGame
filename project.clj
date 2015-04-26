@@ -5,6 +5,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.7.0-alpha6"]
                  [org.clojure/core.typed "0.2.87"]
+                 [org.clojure/core.contracts "0.0.5"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [yesql "0.4.1"]
                  [org.clojure/java.jdbc "0.3.6"] ;; workaround for korma
