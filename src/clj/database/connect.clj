@@ -26,7 +26,7 @@
     (fn [idplayer]
        (get-items-query db-spec (Integer/parseInt idplayer)))
     (contract getitems
-      "ensures string is given and an Integer"
+      "ensures String is given and is an Integer"
       [x] [string-as-number? => (= 1 1)])))
 
 (ann ^:no-check existing-amount [Map Integer String -> List])
