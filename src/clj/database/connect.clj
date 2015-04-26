@@ -2,67 +2,37 @@
   (:require [config.parse :as cf]
             [clojure.core.typed :refer [ann Map Set] :as t]
             [clojure.tools.logging :as log]
-            [korma.core :as k :refer [defentity delete select where values insert update fields set-fields]]
-            [korma.db :refer [defdb postgres transaction]])
+            [clojure.java.jdbc :as jdbc]
+            [yesql.core :refer [defquery]])
   (:import (java.sql Timestamp)
            (java.lang Boolean)))
 
 (ann db-spec Map)
 (def db-spec (cf/load-config "resources/config.clj"))
 
-(ann ^:no-check korma.db/postgres [Map -> Map])
-(ann ^:no-check korma.db/create-db [Map -> Map])
-(ann ^:no-check korma.db/default-connection [Map -> Map])
-(ann ^:no-check korma.core/create-entity [String -> Map])
-(ann ^:no-check korma.engine/*bound-table* String)
-(ann ^:no-check korma.engine/*bound-aliases* Boolean)
-(ann ^:no-check korma.engine/*bound-options* Boolean)
-
-(ann db Map)
-(defdb db (postgres db-spec))
-
-(defentity item)
+(defquery get-items-query "sql/select.sql")
 
 (defn get-items [idplayer]
-  (select item
-    (where {:idplayer (Integer/parseInt idplayer)})))
+  (get-items-query db-spec (Integer/parseInt idplayer)))
 
-(defmacro existing-amount [idplayer# ordersymbol#]
-   `(:amount (first (select item
-                  (fields :amount)
-                  (where {:idplayer (Integer/parseInt ~idplayer#)
-                          :symbol   ~ordersymbol#})))))
-
-(defmacro change-position [newamount# change-symbol# idplayer#]
-    `(update item
-      (set-fields {:amount ~newamount#})
-      (where {:idplayer (Integer/parseInt ~idplayer#)
-                          :symbol   ~change-symbol#})))
-
+(defquery existing-amount "sql/existingamount.sql")
+(defquery update-item! "sql/updateitem.sql")
+(defquery insert-item! "sql/insertitem.sql")
 
 ;; (db/order "YHOO" 2 44.52 "1")
-(defn order [ordersymbol amount price idplayer]
-  (transaction
-    (let [money (:amount (first (select item
-                  (fields :amount)
-                  (where {:idplayer (Integer/parseInt idplayer)
-                          :symbol   "CASH"}))))
+(defn order [ordersymbol amount price idpl]
+  (jdbc/with-db-transaction [connection db-spec]
+    (let [idplayer (Integer/parseInt idpl)
+          money (:amount (first (existing-amount connection idplayer "CASH")))
           costs (* amount price)]
       (log/info money)
       (when (and (not (nil? money)) (>= money costs) )
-        (change-position (- money costs) "CASH" idplayer)
-        (if-let [existingamount (existing-amount idplayer ordersymbol)]
-          (update item
-            (set-fields {:amount (+ existingamount amount)})
-            (where {:idplayer (Integer/parseInt idplayer)
-                          :symbol   ordersymbol}))
-          (insert item
-            (values [{:symbol ordersymbol
-                      :amount amount
-                      :price price
-                      :idplayer (Integer/parseInt idplayer)
-                      :ts (java.sql.Timestamp. (System/currentTimeMillis))}])))))))
+        (update-item! connection (- money costs) "CASH" idplayer)
+        (if-let [existingamount (:amount (first (existing-amount connection idplayer ordersymbol)))]
+          (update-item! connection (+ existingamount amount) ordersymbol idplayer)
+          (insert-item! connection ordersymbol amount price idplayer (java.sql.Timestamp. (System/currentTimeMillis))))))))
 
+(comment
 ;; (db/sell "YHOO" 2 44.52 "1")
 (defn sell [sellsymbol amount price idplayer]
   (transaction
@@ -75,3 +45,28 @@
          (delete item
             (where {:idplayer (Integer/parseInt idplayer)
                           :symbol   sellsymbol})))))))
+
+)
+
+(comment
+
+(defmacro existing-amount [idplayer# ordersymbol#]
+   `(:amount (first (select item
+                  (fields :amount)
+                  (where {:idplayer (Integer/parseInt ~idplayer#)
+                          :symbol   ~ordersymbol#})))))
+
+(defmacro change-position [newamount# change-symbol# idplayer#]
+    `(update item
+      (set-fields {:amount ~newamount#})
+      (where {:idplayer (Integer/parseInt ~idplayer#)
+                          :symbol   ~change-symbol#})))
+)
+
+(comment
+
+  (defn get-items [idplayer]
+  (select item
+    (where {:idplayer (Integer/parseInt idplayer)})))
+
+  )

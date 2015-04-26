@@ -6,8 +6,8 @@
   :dependencies [[org.clojure/clojure "1.7.0-alpha6"]
                  [org.clojure/core.typed "0.2.87"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
-                 [korma "0.4.0"]
-                 [org.clojure/java.jdbc "0.3.5"] ;; workaround for korma
+                 [yesql "0.4.1"]
+                 [org.clojure/java.jdbc "0.3.6"] ;; workaround for korma
                  [org.postgresql/postgresql "9.4-1201-jdbc41"]
                  [com.theoryinpractise.frege/frege "3.21.586-g026e8d7"]
                  [ch.qos.logback/logback-classic "1.1.1"]
