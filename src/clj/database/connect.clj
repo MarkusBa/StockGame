@@ -18,8 +18,9 @@
 (defquery existing-amount "sql/existingamount.sql")
 (defquery update-item! "sql/updateitem.sql")
 (defquery insert-item! "sql/insertitem.sql")
+(defquery delete-item! "sql/deleteitem.sql")
 
-;; (db/order "YHOO" 2 44.52 "1")
+;; (db/order "YHOO" 2 44.52 "1") -> 1
 (defn order [ordersymbol amount price idpl]
   (jdbc/with-db-transaction [connection db-spec]
     (let [idplayer (Integer/parseInt idpl)
@@ -32,41 +33,17 @@
           (update-item! connection (+ existingamount amount) ordersymbol idplayer)
           (insert-item! connection ordersymbol amount price idplayer (java.sql.Timestamp. (System/currentTimeMillis))))))))
 
-(comment
-;; (db/sell "YHOO" 2 44.52 "1")
-(defn sell [sellsymbol amount price idplayer]
-  (transaction
-   (let [existingamount (existing-amount idplayer sellsymbol)
-         existingcash (existing-amount idplayer "CASH")]
+;; (db/sell "YHOO" 2 44.52 "1") -> 1
+(defn sell [sellsymbol amount price idpl]
+  (jdbc/with-db-transaction [connection db-spec]
+   (let [idplayer (Integer/parseInt idpl)
+         existingamount (:amount (first (existing-amount connection idplayer sellsymbol)))
+         existingcash (:amount (first (existing-amount connection idplayer "CASH")))]
      (when (and (not (nil? existingamount)) (>= existingamount amount))
-       (change-position (+ existingcash (* amount price)) "CASH" idplayer)
+       (update-item! connection (+ existingcash (* amount price)) "CASH" idplayer)
        (if (> existingamount amount)
-         (change-position (- existingamount amount) sellsymbol idplayer)
-         (delete item
-            (where {:idplayer (Integer/parseInt idplayer)
-                          :symbol   sellsymbol})))))))
+         (update-item! connection (- existingamount amount) sellsymbol idplayer)
+         (delete-item! connection idplayer sellsymbol))))))
 
-)
 
-(comment
 
-(defmacro existing-amount [idplayer# ordersymbol#]
-   `(:amount (first (select item
-                  (fields :amount)
-                  (where {:idplayer (Integer/parseInt ~idplayer#)
-                          :symbol   ~ordersymbol#})))))
-
-(defmacro change-position [newamount# change-symbol# idplayer#]
-    `(update item
-      (set-fields {:amount ~newamount#})
-      (where {:idplayer (Integer/parseInt ~idplayer#)
-                          :symbol   ~change-symbol#})))
-)
-
-(comment
-
-  (defn get-items [idplayer]
-  (select item
-    (where {:idplayer (Integer/parseInt idplayer)})))
-
-  )
