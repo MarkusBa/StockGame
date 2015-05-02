@@ -87,13 +87,15 @@
   (let [ordersymbol (:symbol @state)
         orderamount (:amount @state)]
     (go (let [response (<! (http/post "order" {:form-params {"idplayer" param "ordersymbol" ordersymbol "amount" orderamount}}))]
-        (println response)))))
+        (println response)
+        (itemquery idplayer)))))
 
 (defn sellquery [param]
   (let [sellsymbol (:symbol @state)
         sellamount (:amount @state)]
     (go (let [response (<! (http/post "sell" {:form-params {"idplayer" param "sellsymbol" sellsymbol "amount" sellamount}}))]
-        (println response)))))
+        (println response)
+        (itemquery idplayer)))))
 
 (defn symbolquery [param]
   (go (let [response (<! (http/get "symbol" {:query-params {"query" param}}))]
