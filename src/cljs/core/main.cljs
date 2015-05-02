@@ -33,10 +33,10 @@
    "Change" "Change"
    "YearLow" "YearLow"
    "YearHigh" "YearHigh"
-   "MarketCapitalization" "MarketCapitalization"
-   "PercentChangeFromYearLow" "PercentChangeFromYearLow"
-   "HundreddayMovingAverage" "HundreddayMovingAverage"
-   "FiftydayMovingAverage" "FiftydayMovingAverage"
+   "MktCapitalization" "MarketCapitalization"
+   "%ChgeFromYearLow" "PercentChangeFromYearLow"
+   "100dayMovingAverage" "HundreddayMovingAverage"
+   "50dayMovingAverage" "FiftydayMovingAverage"
    "DividendYield" "DividendYield"
    "Notes" "Notes"
    "PEGRatio" "PEGRatio"
@@ -164,7 +164,7 @@
      [tableview "Symbols" :symbols symbolKeyVals]])
 
 (defn stocks []
-  [:div {:style {:width "2400px"}}
+  [:div {:style {:width "2900px"}}
     [atom-input-blur "company-name" state :input-stock stockquery]
     [tableview "Stock" :stocks stockKeyVals]])
 

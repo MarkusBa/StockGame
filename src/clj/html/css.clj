@@ -36,13 +36,13 @@
   [:.div-table-col {:float     "left"
                     :display   "table-column"
                     :min-height "1px"
-                    :width     "130px"}])
+                    :width     "160px"}])
 
 
 (def div-table-head-col
   [:.div-table-head-col {:float     "left"
                     :display   "table-column"
-                    :width     "130px"
+                    :width     "160px"
                     :background-color "#ccc"}])
 
 (def navelement-link
