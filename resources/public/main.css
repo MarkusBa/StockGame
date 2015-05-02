@@ -15,16 +15,6 @@
   float: right;
 }
 
-.items {
-  width: 6em;
-  display: inline-block;
-}
-
-.searchlbl {
-  width: 8em;
-  display: inline-block;
-}
-
 .div-table {
   display: table;
   width: auto;

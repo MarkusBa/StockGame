@@ -143,44 +143,44 @@
    [:h1 listname]
    [lister (listkeyword @state) keyVals]])
 
-(defn atom-input-blur [id state atomkeyword queryfunction]
-  [(keyword (str "input#" id)) {:type "text"
+(defn atom-input-blur [place state atomkeyword queryfunction]
+  [:input {:type "text"
+           :placeholder place
            ;:value (:qstock @state)
            :on-blur #(let [text (-> % .-target .-value)]
                          (swap! state assoc atomkeyword text)
                          (queryfunction text))}])
 
-(defn atom-input [id state atomkeyword]
-  [(keyword (str "input#" id)) {:type "text"
+(defn atom-input [place state atomkeyword]
+  [:input {:type "text"
+           :placeholder place
            :value (atomkeyword @state)
            :on-change #(let [text (-> % .-target .-value)]
                          (swap! state assoc atomkeyword text))}])
 
 (defn symbols []
   [:div
-     [:label.searchlbl "symbol: "]
-     [atom-input-blur "symbols" state :input-symbol symbolquery]
+     [atom-input-blur "symbol" state :input-symbol symbolquery]
      [listview "Symbols" :symbols symbolKeyVals]])
 
 (defn stocks []
   [:div
-    [:label.searchlbl "company name: "]
-    [atom-input-blur "stocks" state :input-stock stockquery]
+    [atom-input-blur "company-name" state :input-stock stockquery]
     [listview "Stock" :stocks stockKeyVals]])
 
 (defn order []
   [:div
    [:h1 "Order"]
-   [:label.items "symbol: "] [atom-input "ordersymbol" state :ordersymbol] [:br]
-   [:label.items "amount: "] [atom-input "orderamount" state :orderamount] [:br]
+   [atom-input "symbol" state :ordersymbol] [:br]
+   [atom-input "amount" state :orderamount] [:br]
    [:input {:type "button" :value "Commit"
             :on-click #(orderquery idplayer)}]])
 
 (defn sell []
   [:div
    [:h1 "Sell"]
-   [:label.items "symbol: "] [atom-input "sellsymbol" state :sellsymbol] [:br]
-   [:label.items "amount: "] [atom-input "sellamount" state :sellamount] [:br]
+   [atom-input "symbol" state :sellsymbol] [:br]
+   [atom-input "amount" state :sellamount] [:br]
    [:input {:type "button" :value "Commit"
             :on-click #(sellquery idplayer)}]])
 
