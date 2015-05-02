@@ -17,10 +17,10 @@
    "Date" "ts"]))
 
 (def symbolKeyVals
-  (partition 2 ["Symbol:" "symbol"
-   "Name:" "name"
-   "Exchange:" "exchDisp"
-   "Type:" "typeDisp"]))
+  (partition 2 ["Symbol" "symbol"
+   "Name" "name"
+   "Exchange" "exchDisp"
+   "Type" "typeDisp"]))
 
 (def stockKeyVals
   (partition 2 ["Symbol:" "symbol"
@@ -161,7 +161,7 @@
 (defn symbols []
   [:div
      [atom-input-blur "symbol" state :input-symbol symbolquery]
-     [listview "Symbols" :symbols symbolKeyVals]])
+     [tableview "Symbols" :symbols symbolKeyVals]])
 
 (defn stocks []
   [:div
