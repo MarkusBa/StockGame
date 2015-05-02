@@ -2,6 +2,10 @@
   list-style-type: none;
 }
 
+.all {
+  overflow: scroll;
+}
+
 .content {
   margin-left: 20px;
   margin-top: 40px;
@@ -33,13 +37,13 @@
   float: left;
   display: table-column;
   min-height: 1px;
-  width: 130px;
+  width: 160px;
 }
 
 .div-table-head-col {
   float: left;
   display: table-column;
-  width: 130px;
+  width: 160px;
   background-color: #ccc;
 }
 

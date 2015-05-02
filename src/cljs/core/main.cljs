@@ -23,24 +23,24 @@
    "Type" "typeDisp"]))
 
 (def stockKeyVals
-  (partition 2 ["Symbol:" "symbol"
-   "StockExchange:" "StockExchange"
-   "Ask:" "Ask"
-   "Bid:" "Bid"
-   "AverageDailyVolume:" "AverageDailyVolume"
-   "BookValue:" "BookValue"
-   "Currency:" "Currency"
-   "Change:" "Change"
-   "YearLow:" "YearLow"
-   "YearHigh:" "YearHigh"
-   "MarketCapitalization:" "MarketCapitalization"
-   "PercentChangeFromYearLow:" "PercentChangeFromYearLow"
-   "HundreddayMovingAverage:" "HundreddayMovingAverage"
-   "FiftydayMovingAverage:" "FiftydayMovingAverage"
-   "DividendYield:" "DividendYield"
-   "Notes:" "Notes"
-   "PEGRatio:" "PEGRatio"
-   "ExDividendDate:" "ExDividendDate"]))
+  (partition 2 ["Symbol" "symbol"
+   "StockExchange" "StockExchange"
+   "Ask" "Ask"
+   "Bid" "Bid"
+   "AverageDailyVolume" "AverageDailyVolume"
+   "BookValue" "BookValue"
+   "Currency" "Currency"
+   "Change" "Change"
+   "YearLow" "YearLow"
+   "YearHigh" "YearHigh"
+   "MarketCapitalization" "MarketCapitalization"
+   "PercentChangeFromYearLow" "PercentChangeFromYearLow"
+   "HundreddayMovingAverage" "HundreddayMovingAverage"
+   "FiftydayMovingAverage" "FiftydayMovingAverage"
+   "DividendYield" "DividendYield"
+   "Notes" "Notes"
+   "PEGRatio" "PEGRatio"
+   "ExDividendDate" "ExDividendDate"]))
 
 
 ;;TODO
@@ -164,9 +164,9 @@
      [tableview "Symbols" :symbols symbolKeyVals]])
 
 (defn stocks []
-  [:div
+  [:div {:style {:width "2400px"}}
     [atom-input-blur "company-name" state :input-stock stockquery]
-    [listview "Stock" :stocks stockKeyVals]])
+    [tableview "Stock" :stocks stockKeyVals]])
 
 (defn order []
   [:div

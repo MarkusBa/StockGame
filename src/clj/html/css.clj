@@ -5,6 +5,9 @@
 ;; (require '[html.css :as cs] :reload)
 ;; (cs/generateCSS)
 
+(def all
+  [:.all {:overflow "scroll"}])
+
 (def content
   [:.content {:margin-left "20px" :margin-top "40px"}])
 
@@ -66,6 +69,7 @@
   (css
    {:pretty-print true :output-to "resources/public/main.css"}
    ul
+   all
    content
    left
    right
