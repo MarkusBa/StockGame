@@ -43,8 +43,19 @@
   background-color: #ccc;
 }
 
+.navelement-link {
+  float: left;
+  color: blue;
+  cursor: pointer;
+  border: 1px;
+  margin: 5px;
+  font-weight: bold;
+}
+
 .navelement {
   float: left;
+  color: black;
+  cursor: default;
   border: 1px;
   margin: 5px;
   font-weight: bold;

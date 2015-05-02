@@ -42,10 +42,22 @@
                     :width     "130px"
                     :background-color "#ccc"}])
 
+(def navelement-link
+  [:.navelement-link
+       {:float "left"
+        :color "blue"
+        :cursor "pointer"
+        :border "1px"
+        :margin "5px"
+        :font-weight "bold"}])
+
+
 
 (def navelement
   [:.navelement
        {:float "left"
+        :color "black"
+        :cursor "default"
         :border "1px"
         :margin "5px"
         :font-weight "bold"}])
@@ -61,4 +73,5 @@
    div-table-row
    div-table-col
    div-table-head-col
+   navelement-link
    navelement))

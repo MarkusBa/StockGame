@@ -65,7 +65,8 @@
       (if (vector? text) text (vector text))))
 
 ;; state
-(def state (atom {:ordersymbol nil
+(def state (atom {:current-page nil
+                  :ordersymbol nil
                   :orderamount nil
                   :sellsymbol nil
                   :sellamount nil
@@ -190,24 +191,32 @@
 (declare content)
 
 (defn render-page [innercontent]
+  (swap! state assoc :current-page innercontent)
   (r/render-component
    [content innercontent]
      (.-body js/document)))
 
+(defn pageToKeyword [page]
+  (if (= page (:current-page @state)) :div.navelement :div.navelement-link))
+
 (defn content [innercontent]
   [:div.all
      [:div.navigation
-       [:div.navelement {:on-click #(render-page items)} "Portfolio"]
-       [:div.navelement {:on-click #(render-page stocks)} "Stocks"]
-       [:div.navelement {:on-click #(render-page symbols)} "Symbols"]
+       [(pageToKeyword items)
+        {:on-click #(render-page items)}
+        "Portfolio"]
+       [(pageToKeyword stocks)
+        {:on-click #(render-page stocks)} "Stocks"]
+       [(pageToKeyword symbols)
+        {:on-click #(render-page symbols)} "Symbols"]
       ]
      [:br]
      [:div.content
       [innercontent]]])
 
-(itemquery idplayer)
 
-(render-page stocks)
+(itemquery idplayer)
+(render-page items)
 
 
 
