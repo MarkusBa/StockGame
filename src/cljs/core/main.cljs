@@ -84,14 +84,14 @@
         (swap! state assoc :items (read-items-response response)))))
 
 (defn orderquery [param]
-  (let [ordersymbol (:ordersymbol @state)
-        orderamount (:orderamount @state)]
+  (let [ordersymbol (:symbol @state)
+        orderamount (:amount @state)]
     (go (let [response (<! (http/post "order" {:form-params {"idplayer" param "ordersymbol" ordersymbol "amount" orderamount}}))]
         (println response)))))
 
 (defn sellquery [param]
-  (let [sellsymbol (:sellsymbol @state)
-        sellamount (:sellamount @state)]
+  (let [sellsymbol (:symbol @state)
+        sellamount (:amount @state)]
     (go (let [response (<! (http/post "sell" {:form-params {"idplayer" param "sellsymbol" sellsymbol "amount" sellamount}}))]
         (println response)))))
 
@@ -168,34 +168,22 @@
     [atom-input-blur "company-name" state :input-stock stockquery]
     [tableview "Stock" :stocks stockKeyVals]])
 
-(defn order []
-  [:div
-   [atom-input "symbol" state :ordersymbol] [:br]
-   [atom-input "amount" state :orderamount] [:br]
-   [:input {:type "button" :value "Commit"
-            :on-click #(orderquery idplayer)}]])
-
-(defn sell []
-  [:div
-   [atom-input "symbol" state :sellsymbol] [:br]
-   [atom-input "amount" state :sellamount] [:br]
-   [:input {:type "button" :value "Commit"
-            :on-click #(sellquery idplayer)}]])
-
 (defn order? []
   (= order (:order-sell @state)))
 
-;:selected "selected"
 (defn order-sell []
-   [:div {:style {:color (if (order?) "black" "blue")}
+  [:div
+    [:div {:style {:color (if (order?) "black" "blue")}
           :onclick #(swap! state assoc :order-sell order)
              }
     "Order"]
-   [:div {:style {:color (if (order?) "blue" "black")}
+    [:div {:style {:color (if (order?) "blue" "black")}
           :onclick #(swap! state assoc :order-sell sell)}
     "Sell"]
-  [(if (order?) order sell)])
-
+    [atom-input "symbol" state :symbol] [:br]
+    [atom-input "amount" state :amount] [:br]
+    [:input {:type "button" :value "Commit"
+            :on-click #((if (order?) orderquery sellquery) idplayer)}]])
 
 (defn items []
   [:div
