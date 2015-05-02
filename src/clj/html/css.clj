@@ -6,7 +6,7 @@
 ;; (cs/generateCSS)
 
 (def all
-  [:.all {:overflow "scroll"}])
+  [:.all {:overflow "auto"}])
 
 (def content
   [:.content {:margin-left "20px" :margin-top "40px"}])
@@ -20,30 +20,11 @@
 (def right
   [:.right {:float "right"}])
 
-(def div-table
-  [:.div-table {:display "table"
-                :width   "auto"
-                :background-color "#eee"
-                :border "1px solid #666666"
-                :border-spacing "5px"}])
+(def th
+  [:th {:background-color "#ccc"}])
 
-(def div-table-row
-  [:.div-table-row {:display "table-row"
-                    :width   "auto"
-                    :clear   "both"}])
-
-(def div-table-col
-  [:.div-table-col {:float     "left"
-                    :display   "table-column"
-                    :min-height "1px"
-                    :width     "160px"}])
-
-
-(def div-table-head-col
-  [:.div-table-head-col {:float     "left"
-                    :display   "table-column"
-                    :width     "160px"
-                    :background-color "#ccc"}])
+(def td
+  [:td {:background-color "#eee"}])
 
 (def navelement-link
   [:.navelement-link
@@ -73,9 +54,7 @@
    content
    left
    right
-   div-table
-   div-table-row
-   div-table-col
-   div-table-head-col
+   th
+   td
    navelement-link
    navelement))

@@ -33,8 +33,8 @@
    "Change" "Change"
    "YearLow" "YearLow"
    "YearHigh" "YearHigh"
-   "MktCapitalization" "MarketCapitalization"
-   "%ChgeFromYearLow" "PercentChangeFromYearLow"
+   "MarketCapitalization" "MarketCapitalization"
+   "PercentChangeFromYearLow" "PercentChangeFromYearLow"
    "100dayMovingAverage" "HundreddayMovingAverage"
    "50dayMovingAverage" "FiftydayMovingAverage"
    "DividendYield" "DividendYield"
@@ -106,17 +106,16 @@
 
 (defn tablizer [items keyVals]
   (let [headers (map first itemKeyVals)]
-    (println keyVals)
-    [:div.div-table
+    [:table
      ;;heading
-     [:div.div-table-row
+     [:tr
        (for [[k v] keyVals]
-         [:div.div-table-head-col
+         [:th
                           k])]
      (for [item items]
-       ^{:key item} [:div.div-table-row
+       ^{:key item} [:tr
                       (for [[k v] keyVals]
-                         [:div.div-table-col
+                         [:td
                           (get item v)])])]))
 
 
@@ -164,7 +163,7 @@
      [tableview "Symbols" :symbols symbolKeyVals]])
 
 (defn stocks []
-  [:div {:style {:width "2900px"}}
+  [:div
     [atom-input-blur "company-name" state :input-stock stockquery]
     [tableview "Stock" :stocks stockKeyVals]])
 
