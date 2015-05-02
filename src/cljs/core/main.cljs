@@ -65,7 +65,7 @@
       (if (vector? text) text (vector text))))
 
 ;; state
-(def state (atom {:order-sell order
+(def state (atom {:order true
                   :current-page nil
                   :ordersymbol nil
                   :orderamount nil
@@ -168,22 +168,18 @@
     [atom-input-blur "company-name" state :input-stock stockquery]
     [tableview "Stock" :stocks stockKeyVals]])
 
-(defn order? []
-  (= order (:order-sell @state)))
-
 (defn order-sell []
   [:div
-    [:div {:style {:color (if (order?) "black" "blue")}
-          :onclick #(swap! state assoc :order-sell order)
-             }
-    "Order"]
-    [:div {:style {:color (if (order?) "blue" "black")}
-          :onclick #(swap! state assoc :order-sell sell)}
-    "Sell"]
+    [:h2 (if (:order @state) "Order" "Sell")]
+    [:input {:type "checkbox"
+             :checked (:order @state)
+             :on-change #(let [old (:order @state)]
+                         (swap! state assoc :order (not old)))}
+     "Order"] [:br]
     [atom-input "symbol" state :symbol] [:br]
     [atom-input "amount" state :amount] [:br]
     [:input {:type "button" :value "Commit"
-            :on-click #((if (order?) orderquery sellquery) idplayer)}]])
+            :on-click #((if (:order @state) orderquery sellquery) idplayer)}]])
 
 (defn items []
   [:div
