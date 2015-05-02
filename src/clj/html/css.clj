@@ -42,6 +42,14 @@
                     :width     "130px"
                     :background-color "#ccc"}])
 
+(def searchlbl
+  [:.searchlbl {:width "8em"
+            :display "inline-block"}])
+
+(def items
+  [:.items {:width "6em"
+            :display "inline-block"}])
+
 (def navelement-link
   [:.navelement-link
        {:float "left"
@@ -69,6 +77,8 @@
    content
    left
    right
+   items
+   searchlbl
    div-table
    div-table-row
    div-table-col

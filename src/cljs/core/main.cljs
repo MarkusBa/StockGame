@@ -143,42 +143,44 @@
    [:h1 listname]
    [lister (listkeyword @state) keyVals]])
 
-(defn atom-input-blur [state atomkeyword queryfunction]
-  [:input {:type "text"
+(defn atom-input-blur [id state atomkeyword queryfunction]
+  [(keyword (str "input#" id)) {:type "text"
            ;:value (:qstock @state)
            :on-blur #(let [text (-> % .-target .-value)]
                          (swap! state assoc atomkeyword text)
                          (queryfunction text))}])
 
-(defn atom-input [state atomkeyword]
-  [:input {:type "text"
+(defn atom-input [id state atomkeyword]
+  [(keyword (str "input#" id)) {:type "text"
            :value (atomkeyword @state)
            :on-change #(let [text (-> % .-target .-value)]
                          (swap! state assoc atomkeyword text))}])
 
 (defn symbols []
   [:div
-     [atom-input-blur state :input-symbol symbolquery]
+     [:label.searchlbl "symbol: "]
+     [atom-input-blur "symbols" state :input-symbol symbolquery]
      [listview "Symbols" :symbols symbolKeyVals]])
 
 (defn stocks []
   [:div
-    [atom-input-blur state :input-stock stockquery]
+    [:label.searchlbl "company name: "]
+    [atom-input-blur "stocks" state :input-stock stockquery]
     [listview "Stock" :stocks stockKeyVals]])
 
 (defn order []
   [:div
    [:h1 "Order"]
-   [:h2 "Symbol"] [atom-input state :ordersymbol]
-   [:h2 "Amount"] [atom-input state :orderamount]
+   [:label.items "symbol: "] [atom-input "ordersymbol" state :ordersymbol] [:br]
+   [:label.items "amount: "] [atom-input "orderamount" state :orderamount] [:br]
    [:input {:type "button" :value "Commit"
             :on-click #(orderquery idplayer)}]])
 
 (defn sell []
   [:div
    [:h1 "Sell"]
-   [:h2 "Symbol"] [atom-input state :sellsymbol]
-   [:h2 "Amount"] [atom-input state :sellamount]
+   [:label.items "symbol: "] [atom-input "sellsymbol" state :sellsymbol] [:br]
+   [:label.items "amount: "] [atom-input "sellamount" state :sellamount] [:br]
    [:input {:type "button" :value "Commit"
             :on-click #(sellquery idplayer)}]])
 
