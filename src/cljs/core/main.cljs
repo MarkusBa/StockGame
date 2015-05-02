@@ -10,11 +10,11 @@
 (def json-reader (transit/reader :json))
 
 (def itemKeyVals
-  (partition 2 ["Symbol:" "symbol"
-   "Amount:" "amount"
-   "Price:" "price"
-   "Current price:" "currentprice"
-   "Date:" "ts"]))
+  (partition 2 ["Symbol" "symbol"
+   "Amount" "amount"
+   "Price" "price"
+   "Current price" "currentprice"
+   "Date" "ts"]))
 
 (def symbolKeyVals
   (partition 2 ["Symbol:" "symbol"
@@ -103,6 +103,28 @@
 
 ;; ----components-----
 
+(defn tablizer [items keyVals]
+  (let [headers (map first itemKeyVals)]
+    (println keyVals)
+    [:div.div-table
+     ;;heading
+     [:div.div-table-row
+       (for [[k v] keyVals]
+         [:div.div-table-head-col
+                          k])]
+     (for [item items]
+       ^{:key item} [:div.div-table-row
+                      (for [[k v] keyVals]
+                         [:div.div-table-col
+                          (get item v)])])]))
+
+
+(defn tableview [tablename listkeyword keyVals]
+  [:div
+   [:h1 tablename]
+   [tablizer (listkeyword @state) keyVals]])
+
+
 (defn lister [items keyVals]
   [:ul
    (for [item items]
@@ -163,7 +185,7 @@
   [:div
     [order]
     [sell]
-    [listview "Items" :items itemKeyVals]])
+    [tableview "Items" :items itemKeyVals]])
 
 (declare content)
 

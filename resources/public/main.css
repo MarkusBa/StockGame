@@ -15,6 +15,34 @@
   float: right;
 }
 
+.div-table {
+  display: table;
+  width: auto;
+  background-color: #eee;
+  border: 1px solid #666666;
+  border-spacing: 5px;
+}
+
+.div-table-row {
+  display: table-row;
+  width: auto;
+  clear: both;
+}
+
+.div-table-col {
+  float: left;
+  display: table-column;
+  min-height: 1px;
+  width: 130px;
+}
+
+.div-table-head-col {
+  float: left;
+  display: table-column;
+  width: 130px;
+  background-color: #ccc;
+}
+
 .navelement {
   float: left;
   border: 1px;
