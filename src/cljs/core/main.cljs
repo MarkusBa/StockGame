@@ -301,7 +301,7 @@
 
 (defn run []
   (dispatch-sync [:initialize 1])
-  (dispatch [:current-page items])
+  (dispatch [:input-changed :current-page items])
   (render-page))
 
 (run)
