@@ -2,6 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [reagent.core :as r :refer [atom]]
             [cognitect.transit :as transit]
+            [re-frame.core :as rf :refer [subscribe dispatch register-sub]]
             [cljs-http.client :as http]
             [cljs.core.async :refer [<!]]))
 

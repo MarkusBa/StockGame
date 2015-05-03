@@ -16,6 +16,7 @@
                  [org.clojure/clojurescript "0.0-2268"]
                  [fogus/ring-edn "0.2.0"]
                  [reagent "0.5.0"]
+                 [re-frame "0.3.2"]
                  [garden "1.2.5"]
                  [clj-http "1.1.0"]
                  [cljs-http "0.1.30"]
