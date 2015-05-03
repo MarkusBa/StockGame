@@ -39,12 +39,10 @@
 (def initial-state
                  {:idplayer 1
                   :timeout nil
-                  :order true
+                  :is-order true
                   :current-page nil
-                  :ordersymbol nil
-                  :orderamount nil
-                  :sellsymbol nil
-                  :sellamount nil
+                  :symbol nil
+                  :amount nil
                   :items nil
                   :input-stock nil
                   :stocks nil

@@ -1,7 +1,7 @@
 (ns core.main
-  (:require-macros [cljs.core.async.macros :refer [go]])
-  (:require [reagent.core :as r :refer [atom]]
-            [core.definitions :as cd :refer [json-reader
+  (:require-macros [cljs.core.async.macros :refer [go]]
+                   [reagent.ratom :refer [reaction]])
+  (:require [core.definitions :as cd :refer [json-reader
                                              itemKeyVals
                                              symbolKeyVals
                                              stockKeyVals
@@ -9,6 +9,7 @@
             [cognitect.transit :as transit]
             [re-frame.core :as rf :refer [subscribe
                                           dispatch
+                                          dispatch-sync
                                           register-handler
                                           register-sub]]
             [cljs-http.client :as http]
@@ -16,6 +17,7 @@
 
 (enable-console-print!)
 
+;;helper functions for cleaning the arriving json
 (defn read-items-response [response]
   (let [temp1 (:body response)
         temp (transit/read json-reader temp1)]
@@ -34,37 +36,77 @@
         text (get (get (get temp "query") "results")"quote")]
       (if (vector? text) text (vector text))))
 
-;; state
-(def state (atom initial-state))
+;;handlers
 
-;; queries
-(defn itemquery [param]
-  (go (let [response (<! (http/get "items" {:query-params {"idplayer" param}}))]
-        (swap! state assoc :items (read-items-response response)))))
+(register-handler
+ :initialize
+ (fn [db [_ idplayer]]
+   (dispatch [:itemquery idplayer])
+   (merge db initial-state)))
 
-(defn orderquery [param]
-  (let [ordersymbol (:symbol @state)
-        orderamount (:amount @state)]
-    (go (let [response (<! (http/post "order" {:form-params {"idplayer" param "ordersymbol" ordersymbol "amount" orderamount}}))]
+(register-handler
+ :itemquery
+ (fn [db [_ idplayer]]
+   (go (let [response (<! (http/get "items" {:query-params {"idplayer" idplayer}}))]
+        (assoc-in db :items (read-items-response response))))
+   db))
+
+(register-handler
+ :orderquery
+ (fn [db [_ idplayer ordersymbol orderamount]]
+    (go (let [response (<! (http/post "order" {:form-params {"idplayer" idplayer "ordersymbol" ordersymbol "amount" orderamount}}))]
         (println response)
-        (itemquery param)))))
+        (dispatch  [:itemquery idplayer])))
+   db))
 
-(defn sellquery [param]
-  (let [sellsymbol (:symbol @state)
-        sellamount (:amount @state)]
-    (go (let [response (<! (http/post "sell" {:form-params {"idplayer" param "sellsymbol" sellsymbol "amount" sellamount}}))]
+(register-handler
+ :sellquery
+ (fn [db [_ idplayer sellsymbol sellamount]]
+    (go (let [response (<! (http/post "sell" {:form-params {"idplayer" idplayer "ordersymbol" sellsymbol "amount" sellamount}}))]
         (println response)
-        (itemquery param)))))
+        (dispatch  [:itemquery idplayer])))
+   db))
 
-(defn symbolquery [param]
+(register-handler
+ :symbolquery
+ (fn [db [_ param]]
   (go (let [response (<! (http/get "symbol" {:query-params {"query" param}}))]
-        (swap! state assoc :symbols (read-symbol-response response)))))
+        (assoc-in db :symbols (read-symbol-response response))))
+  db))
 
-(defn stockquery [param]
+(register-handler
+ :stockquery
+ (fn [db [_ param]]
   (go (let [response (<! (http/get "stock" {:query-params {"companyname" param}}))]
-        (swap! state assoc :stocks (read-stock-response response)))))
+        (assoc-in db :stocks (read-stock-response response))))
+  db))
 
-;; ----components-----
+;; TODO refactor away
+(register-handler
+ :handle-actual-search
+ (fn [db [_ correspkeyword querykey]]
+   (let [param (correspkeyword db)]
+     (dispatch [querykey param]))))
+
+
+(register-handler
+ :handle-search
+ (fn [db [_ text correspkeyword querykey]]
+                         (assoc-in db assoc correspkeyword text)
+                         (let [timeout (:timeout db)]
+                            (if timeout ((.-clearTimeout js/window) timeout)))
+                         (assoc-in db assoc :timeout
+                                   ((.-setTimeout js/window)
+                                    (fn [] (dispatch [:handle-actual-search correspkeyword querykey]))
+                                    600  ))))
+
+(register-handler
+ :input-changed
+ (fn [db [_ inputkey text]]
+   (assoc-in db inputkey text)))
+
+
+;; ----components without subscriptions-----
 
 (defn tablizer [items keyVals]
   (let [headers (map first itemKeyVals)]
@@ -80,13 +122,6 @@
                          [:td
                           (get item v)])])]))
 
-
-(defn tableview [tablename listkeyword keyVals]
-  [:div
-   [:h1 tablename]
-   [tablizer (listkeyword @state) keyVals]])
-
-
 (defn lister [items keyVals]
   [:ul
    (for [item items]
@@ -98,56 +133,137 @@
                         [:span {:style {:display "inline-block" :width "250px" :text-align "left"}} k ]
                         [:span {:style {:display "inline-block" :text-align "left"}} (get item v)]])]])])
 
+(defn tableview [tablename listkeyword keyVals items]
+  [:div
+   [:h1 tablename]
+   [tablizer items keyVals]])
 
-(defn listview [listname listkeyword keyVals]
+(defn listview [listname listkeyword keyVals items]
   [:div
    [:h1 listname]
-   [lister (listkeyword @state) keyVals]])
+   [lister items keyVals]])
 
-(defn atom-input-blur [place state atomkeyword queryfunction]
+;; subscriptions
+
+;; TODO are those necessary?
+
+(register-sub
+ :symbols
+ (fn [db [_]]
+   (reaction
+    (let [symbols (get-in @db [:symbols])]
+      symbols))))
+
+(register-sub
+ :stocks
+ (fn [db [_]]
+   (reaction
+    (let [stocks (get-in @db [:stocks])]
+      stocks))))
+
+(register-sub
+ :items
+ (fn [db [_]]
+   (reaction
+    (let [items (get-in @db [:items])]
+      items))))
+
+(register-sub
+ :input-symbol
+ (fn [db [_]]
+   (reaction
+    (let [input-symbol (get-in @db [:input-symbol])]
+      input-symbol))))
+
+(register-sub
+ :input-stock
+ (fn [db [_]]
+   (reaction
+    (let [input-stock (get-in @db [:input-stock])]
+      input-stock))))
+
+(register-sub
+ :amount
+ (fn [db [_]]
+   (reaction
+    (let [amount (get-in @db [:amount])]
+      amount))))
+
+(register-sub
+ :symbol
+ (fn [db [_]]
+   (reaction
+    (let [smbl (get-in @db [:symbol])]
+      smbl))))
+
+(register-sub
+ :is-order
+ (fn [db [_]]
+   (reaction
+    (let [is-order (get-in @db [:is-order])]
+      is-order))))
+
+(register-sub
+ :idplayer
+ (fn [db [_]]
+   (reaction
+    (let [idplayer (get-in @db [:idplayer])]
+      idplayer))))
+
+
+;; ----components--------
+
+;;TODO rename items keyword
+
+(defn atom-input-blur [place oldvalue atomkeyword querykey]
   [:input {:type "text"
            :placeholder place
-           :value (atomkeyword @state)
+           :value oldvalue
            :on-change #(let [text (-> % .-target .-value)]
-                         (swap! state assoc atomkeyword text)
-                         (let [timeout (:timeout @state)]
-                            (if timeout ((.-clearTimeout js/window) timeout)))
-                         (swap! state assoc :timeout ((.-setTimeout js/window) (fn [] (queryfunction (atomkeyword @state))) 600  )))}])
-
-(defn atom-input [place state atomkeyword]
-  [:input {:type "text"
-           :placeholder place
-           :value (atomkeyword @state)
-           :on-change #(let [text (-> % .-target .-value)]
-                         (swap! state assoc atomkeyword text))}])
+                         (dispatch [:handle-search text atomkeyword querykey]))}])
 
 (defn symbols []
-  [:div
-     [atom-input-blur "symbol" state :input-symbol symbolquery]
-     [tableview "Symbols" :symbols symbolKeyVals]])
+  (let [input-symbol (subscribe [:input-symbol])
+        symbolslist  (subscribe [:symbols])]
+  (fn []
+    [:div
+       [atom-input-blur "symbol" input-symbol :input-symbol :symbolquery]
+       [tableview "Symbols" :symbols symbolKeyVals symbolslist]])))
 
 (defn stocks []
-  [:div
-    [atom-input-blur "company-name" state :input-stock stockquery]
-    [tableview "Stock" :stocks stockKeyVals]])
+  (let [input-stock (subscribe [:input-stock])
+        stockslist  (subscribe [:stocks])]
+    (fn []
+      [:div
+        [atom-input-blur "company-name" input-stock :input-stock :stockquery]
+        [tableview "Stock" :stocks stockKeyVals stockslist]])))
 
-(defn order-sell []
-  [:div
-    [:h2 (if (:order @state) "Order" "Sell")]
-    [:input {:type "checkbox"
-             :checked (:order @state)
-             :on-change #(let [old (:order @state)]
-                         (swap! state assoc :order (not old)))}
-     "Order"] [:br]
-    [atom-input "symbol" state :symbol] [:br]
-    [atom-input "amount" state :amount] [:br]
-    [:input {:type "button" :value "Commit"
-            :on-click #((if (:order @state) orderquery sellquery) (:idplayer @state))}]])
+(defn atom-input [place oldvalue atomkeyword]
+  [:input {:type "text"
+           :placeholder place
+           :value oldvalue
+           :on-change #(let [text (-> % .-target .-value)]
+                         (dispatch [:input-changed atomkeyword text]))}])
 
 (defn items []
-  [:div
-    [order-sell]
-    [tableview "Items" :items itemKeyVals]])
+  (let [amount (subscribe [:amount])
+        items (subscribe [:items])
+        idplayer (subscribe [:idplayer])
+        is-order (subscribe [:is-order])
+        smbl (subscribe [:symbol])]
+    (fn []
+      [:div
+        [:h2 (if is-order "Order" "Sell")]
+        [:input {:type "checkbox"
+               :checked is-order
+               :on-change #(dispatch [:input-changed :is-order (not is-order)])}
+         "Order"] [:br]
+        [atom-input "symbol" smbl :symbol] [:br]
+        [atom-input "amount" amount :amount] [:br]
+        [:input {:type "button" :value "Commit"
+              :on-click #(dispatch
+                          [(if is-order :orderquery :sellquery) idplayer smbl amount])}]]
+      [tableview "Items" :items itemKeyVals items])))
 
 (declare content)
 
@@ -176,8 +292,9 @@
       [innercontent]]])
 
 
-(itemquery (:idplayer @state))
-(render-page items)
+(defn run []
+  (dispatch-sync [:initialize 1])
+  (render-page items))
 
 
 
