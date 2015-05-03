@@ -89,17 +89,22 @@
    (let [param (correspkeyword db)]
      (dispatch [querykey param]))))
 
-
 (register-handler
- :handle-search
- (fn [db [_ text correspkeyword querykey]]
-                         (assoc db correspkeyword text)
-                         (let [timeout (:timeout db)]
+ :handle-timeout
+ (fn [db [_ correspkeyword querykey]]
+   (let [timeout (:timeout db)]
                             (if timeout ((.-clearTimeout js/window) timeout)))
                          (assoc db :timeout
                                    ((.-setTimeout js/window)
                                     (fn [] (dispatch [:handle-actual-search correspkeyword querykey]))
                                     600  ))))
+
+
+(register-handler
+ :handle-search
+ (fn [db [_ text correspkeyword querykey]]
+                         (dispatch [:handle-timeout correspkeyword querykey])
+                         (assoc db correspkeyword text)))
 
 (register-handler
  :input-changed
@@ -282,7 +287,6 @@
 (defn actual-content []
   (let [page (subscribe [:current-page])]
     (fn []
-     (println "cur" @page)
      [:div.all
        [:div.navigation
          [(pageToKeyword items @page)
