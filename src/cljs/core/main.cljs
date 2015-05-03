@@ -63,7 +63,7 @@
 (register-handler
  :sellquery
  (fn [db [_ idplayer sellsymbol sellamount]]
-    (go (let [response (<! (http/post "sell" {:form-params {"idplayer" idplayer "ordersymbol" sellsymbol "amount" sellamount}}))]
+    (go (let [response (<! (http/post "sell" {:form-params {"idplayer" idplayer "sellsymbol" sellsymbol "amount" sellamount}}))]
         (println response)
         (dispatch  [:itemquery idplayer])))
    db))
