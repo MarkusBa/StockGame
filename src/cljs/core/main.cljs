@@ -7,6 +7,7 @@
                                              stockKeyVals
                                              initial-state]]
             [cognitect.transit :as transit]
+            [reagent.core  :as r]
             [re-frame.core :as rf :refer [subscribe
                                           dispatch
                                           dispatch-sync
@@ -92,10 +93,10 @@
 (register-handler
  :handle-search
  (fn [db [_ text correspkeyword querykey]]
-                         (assoc-in db assoc correspkeyword text)
+                         (assoc-in db correspkeyword text)
                          (let [timeout (:timeout db)]
                             (if timeout ((.-clearTimeout js/window) timeout)))
-                         (assoc-in db assoc :timeout
+                         (assoc-in db :timeout
                                    ((.-setTimeout js/window)
                                     (fn [] (dispatch [:handle-actual-search correspkeyword querykey]))
                                     600  ))))
@@ -271,6 +272,9 @@
                           [(if is-order :orderquery :sellquery) idplayer smbl amount])}]]
       [tableview "Items" :items itemKeyVals items])))
 
+(defn pageToKeyword [page current-page]
+  (if (= page current-page) :div.navelement :div.navelement-link))
+
 (defn content [current-page]
      [:div.all
        [:div.navigation
@@ -293,12 +297,7 @@
     (fn []
       (r/render-component
        [content current-page]
-       (.-body js/document)))
-
-(defn pageToKeyword [page current-page]
-  (if (= page current-page) :div.navelement :div.navelement-link))
-
-
+       (.-body js/document)))))
 
 (defn run []
   (dispatch-sync [:initialize 1])
