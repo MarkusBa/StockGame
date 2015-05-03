@@ -65,7 +65,8 @@
       (if (vector? text) text (vector text))))
 
 ;; state
-(def state (atom {:order true
+(def state (atom {:timeout nil
+                  :order true
                   :current-page nil
                   :ordersymbol nil
                   :orderamount nil
@@ -148,10 +149,12 @@
 (defn atom-input-blur [place state atomkeyword queryfunction]
   [:input {:type "text"
            :placeholder place
-           ;:value (:qstock @state)
-           :on-blur #(let [text (-> % .-target .-value)]
+           :value (atomkeyword @state)
+           :on-change #(let [text (-> % .-target .-value)]
                          (swap! state assoc atomkeyword text)
-                         (queryfunction text))}])
+                         (let [timeout (:timeout @state)]
+                            (if timeout ((.-clearTimeout js/window) timeout)))
+                         (swap! state assoc :timeout ((.-setTimeout js/window) (fn [] (queryfunction (atomkeyword @state))) 600  )))}])
 
 (defn atom-input [place state atomkeyword]
   [:input {:type "text"
