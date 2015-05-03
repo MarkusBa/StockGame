@@ -259,19 +259,19 @@
         is-order (subscribe [:is-order])
         smbl (subscribe [:symbol])]
     (fn []
-      (println @is-order)
       [:div
-        [:h2 (if @is-order "Order" "Sell")]
-        [:input {:type "checkbox"
-               :checked @is-order
-               :on-change #(dispatch [:input-changed :is-order (not @is-order)])}
-         "Order"] [:br]
-        [atom-input "symbol" @smbl :symbol] [:br]
-        [atom-input "amount" @amount :amount] [:br]
-        [:input {:type "button" :value "Commit"
+        [:div
+          [:h2 (if @is-order "Order" "Sell")]
+          [:input {:type "checkbox"
+                 :checked @is-order
+                 :on-change #(dispatch [:input-changed :is-order (not @is-order)])}
+           "Order"] [:br]
+          [atom-input "symbol" @smbl :symbol] [:br]
+          [atom-input "amount" @amount :amount] [:br]
+          [:input {:type "button" :value "Commit"
               :on-click #(dispatch
                           [(if @is-order :orderquery :sellquery) @idplayer @smbl @amount])}]]
-      [tableview "Items" :items itemKeyVals @items])))
+        [tableview "Items" :items itemKeyVals @items]])))
 
 (defn pageToKeyword [page current-page]
   (if (= page current-page) :div.navelement :div.navelement-link))
