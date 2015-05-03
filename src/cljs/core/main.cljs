@@ -49,7 +49,7 @@
  :itemquery
  (fn [db [_ idplayer]]
    (go (let [response (<! (http/get "items" {:query-params {"idplayer" idplayer}}))]
-        (assoc-in db :items (read-items-response response))))
+        (assoc db :items (read-items-response response))))
    db))
 
 (register-handler
@@ -72,14 +72,14 @@
  :symbolquery
  (fn [db [_ param]]
   (go (let [response (<! (http/get "symbol" {:query-params {"query" param}}))]
-        (assoc-in db :symbols (read-symbol-response response))))
+        (assoc db :symbols (read-symbol-response response))))
   db))
 
 (register-handler
  :stockquery
  (fn [db [_ param]]
   (go (let [response (<! (http/get "stock" {:query-params {"companyname" param}}))]
-        (assoc-in db :stocks (read-stock-response response))))
+        (assoc db :stocks (read-stock-response response))))
   db))
 
 ;; TODO refactor away
@@ -93,10 +93,10 @@
 (register-handler
  :handle-search
  (fn [db [_ text correspkeyword querykey]]
-                         (assoc-in db correspkeyword text)
+                         (assoc db correspkeyword text)
                          (let [timeout (:timeout db)]
                             (if timeout ((.-clearTimeout js/window) timeout)))
-                         (assoc-in db :timeout
+                         (assoc db :timeout
                                    ((.-setTimeout js/window)
                                     (fn [] (dispatch [:handle-actual-search correspkeyword querykey]))
                                     600  ))))
@@ -104,7 +104,7 @@
 (register-handler
  :input-changed
  (fn [db [_ inputkey text]]
-   (assoc-in db inputkey text)))
+   (assoc db inputkey text)))
 
 ;; ----components without subscriptions-----
 
