@@ -275,7 +275,9 @@
 (defn pageToKeyword [page current-page]
   (if (= page current-page) :div.navelement :div.navelement-link))
 
-(defn content [current-page]
+(defn actual-content []
+  (let [current-page (subscribe [:current-page])]
+    (fn []
      [:div.all
        [:div.navigation
          [(pageToKeyword items current-page)
@@ -290,18 +292,22 @@
         ]
        [:br]
        [:div.content
-        [current-page]]])
+         "Test"
+        ;[current-page]
+        ]])))
+
+(defn content []
+  [:div
+    [actual-content]])
 
 (defn render-page []
-  (let [current-page (subscribe [:current-page])]
-    (fn []
-      (r/render-component
-       [content current-page]
-       (.-body js/document)))))
+      (r/render
+       [content]
+       (.-body js/document)))
 
 (defn run []
   (dispatch-sync [:initialize 1])
-  (dispatch [:input-changed :current-page items])
+  (dispatch-sync [:input-changed :current-page items])
   (render-page))
 
 (run)
