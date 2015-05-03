@@ -104,6 +104,8 @@
 (register-handler
  :input-changed
  (fn [db [_ inputkey text]]
+   (println inputkey)
+   (println text)
    (assoc db inputkey text)))
 
 ;; ----components without subscriptions-----
@@ -214,8 +216,9 @@
  :current-page
  (fn [db [_]]
    (reaction
-    (let [current-page (get-in @db [:current-page])]
-      current-page))))
+    (let [current-page (get-in @db [:current-page])
+          page (if (nil? current-page) items current-page)]
+      page))))
 
 
 ;; ----components--------
@@ -277,24 +280,24 @@
   (if (= page current-page) :div.navelement :div.navelement-link))
 
 (defn actual-content []
-  (let [current-page (subscribe [:current-page])
-        page (if (nil? @current-page) items @current-page)]
+  (let [page (subscribe [:current-page])]
     (fn []
+     (println "cur" @page)
      [:div.all
        [:div.navigation
-         [(pageToKeyword items page)
-          {:on-click #(dispatch [:input-changed :current-page items])}
+         [(pageToKeyword items @page)
+          {:on-click #(dispatch ^:flush-dom [:input-changed :current-page items])}
           "Portfolio"]
-         [(pageToKeyword stocks page)
-          {:on-click #(dispatch [:input-changed :current-page stocks])}
+         [(pageToKeyword stocks @page)
+          {:on-click #(dispatch  ^:flush-dom [:input-changed :current-page stocks])}
           "Stocks"]
-         [(pageToKeyword symbols page)
-          {:on-click #(dispatch [:input-changed :current-page symbols])}
+         [(pageToKeyword symbols @page)
+          {:on-click #(dispatch ^:flush-dom [:input-changed :current-page symbols])}
           "Symbols"]
         ]
        [:br]
        [:div.content
-        [page]
+        [@page]
         ]])))
 
 (defn content []
