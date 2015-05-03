@@ -49,7 +49,7 @@
  :itemquery
  (fn [db [_ idplayer]]
    (go (let [response (<! (http/get "items" {:query-params {"idplayer" idplayer}}))]
-        (assoc db :items (read-items-response response))))
+        (dispatch [:input-changed :items (read-items-response response)])))
    db))
 
 (register-handler
@@ -72,14 +72,14 @@
  :symbolquery
  (fn [db [_ param]]
   (go (let [response (<! (http/get "symbol" {:query-params {"query" param}}))]
-        (assoc db :symbols (read-symbol-response response))))
+        (dispatch [:input-changed :symbols (read-symbol-response response)])))
   db))
 
 (register-handler
  :stockquery
  (fn [db [_ param]]
   (go (let [response (<! (http/get "stock" {:query-params {"companyname" param}}))]
-        (assoc db :stocks (read-stock-response response))))
+        (dispatch [:input-changed :stocks (read-stock-response response)])))
   db))
 
 ;; TODO refactor away
@@ -109,8 +109,6 @@
 (register-handler
  :input-changed
  (fn [db [_ inputkey text]]
-   (println inputkey)
-   (println text)
    (assoc db inputkey text)))
 
 ;; ----components without subscriptions-----
