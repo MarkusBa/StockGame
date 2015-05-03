@@ -234,16 +234,16 @@
         symbolslist  (subscribe [:symbols])]
   (fn []
     [:div
-       [atom-input-blur "symbol" input-symbol :input-symbol :symbolquery]
-       [tableview "Symbols" :symbols symbolKeyVals symbolslist]])))
+       [atom-input-blur "symbol" @input-symbol :input-symbol :symbolquery]
+       [tableview "Symbols" :symbols symbolKeyVals @symbolslist]])))
 
 (defn stocks []
   (let [input-stock (subscribe [:input-stock])
         stockslist  (subscribe [:stocks])]
     (fn []
       [:div
-        [atom-input-blur "company-name" input-stock :input-stock :stockquery]
-        [tableview "Stock" :stocks stockKeyVals stockslist]])))
+        [atom-input-blur "company-name" @input-stock :input-stock :stockquery]
+        [tableview "Stock" :stocks stockKeyVals @stockslist]])))
 
 (defn atom-input [place oldvalue atomkeyword]
   [:input {:type "text"
@@ -260,40 +260,41 @@
         smbl (subscribe [:symbol])]
     (fn []
       [:div
-        [:h2 (if is-order "Order" "Sell")]
+        [:h2 (if @is-order "Order" "Sell")]
         [:input {:type "checkbox"
-               :checked is-order
-               :on-change #(dispatch [:input-changed :is-order (not is-order)])}
+               :checked @is-order
+               :on-change #(dispatch [:input-changed :is-order (not @is-order)])}
          "Order"] [:br]
-        [atom-input "symbol" smbl :symbol] [:br]
-        [atom-input "amount" amount :amount] [:br]
+        [atom-input "symbol" @smbl :symbol] [:br]
+        [atom-input "amount" @amount :amount] [:br]
         [:input {:type "button" :value "Commit"
               :on-click #(dispatch
-                          [(if is-order :orderquery :sellquery) idplayer smbl amount])}]]
-      [tableview "Items" :items itemKeyVals items])))
+                          [(if @is-order :orderquery :sellquery) @idplayer @smbl @amount])}]]
+      [tableview "Items" :items itemKeyVals @items])))
 
 (defn pageToKeyword [page current-page]
   (if (= page current-page) :div.navelement :div.navelement-link))
 
 (defn actual-content []
-  (let [current-page (subscribe [:current-page])]
+  (let [current-page (subscribe [:current-page])
+        page (if (nil? @current-page) items @current-page)]
     (fn []
+     (println page)
      [:div.all
        [:div.navigation
-         [(pageToKeyword items current-page)
+         [(pageToKeyword items page)
           {:on-click #(dispatch [:input-changed :current-page items])}
           "Portfolio"]
-         [(pageToKeyword stocks current-page)
+         [(pageToKeyword stocks page)
           {:on-click #(dispatch [:input-changed :current-page stocks])}
           "Stocks"]
-         [(pageToKeyword symbols current-page)
+         [(pageToKeyword symbols page)
           {:on-click #(dispatch [:input-changed :current-page symbols])}
           "Symbols"]
         ]
        [:br]
        [:div.content
-         "Test"
-        ;[current-page]
+        [page]
         ]])))
 
 (defn content []
@@ -307,16 +308,9 @@
 
 (defn run []
   (dispatch-sync [:initialize 1])
-  (dispatch-sync [:input-changed :current-page items])
   (render-page))
 
 (run)
-
-
-
-
-
-
 
 
 
