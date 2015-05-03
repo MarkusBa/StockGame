@@ -259,6 +259,7 @@
         is-order (subscribe [:is-order])
         smbl (subscribe [:symbol])]
     (fn []
+      (println @is-order)
       [:div
         [:h2 (if @is-order "Order" "Sell")]
         [:input {:type "checkbox"
@@ -279,7 +280,6 @@
   (let [current-page (subscribe [:current-page])
         page (if (nil? @current-page) items @current-page)]
     (fn []
-     (println page)
      [:div.all
        [:div.navigation
          [(pageToKeyword items page)
@@ -307,7 +307,7 @@
        (.-body js/document)))
 
 (defn run []
-  (dispatch-sync [:initialize 1])
+  (dispatch-sync ^:flush-dom [:initialize 1])
   (render-page))
 
 (run)
