@@ -105,7 +105,6 @@
  (fn [db [_ inputkey text]]
    (assoc-in db inputkey text)))
 
-
 ;; ----components without subscriptions-----
 
 (defn tablizer [items keyVals]
@@ -210,6 +209,13 @@
     (let [idplayer (get-in @db [:idplayer])]
       idplayer))))
 
+(register-sub
+ :current-page
+ (fn [db [_]]
+   (reaction
+    (let [current-page (get-in @db [:current-page])]
+      current-page))))
+
 
 ;; ----components--------
 
@@ -265,37 +271,41 @@
                           [(if is-order :orderquery :sellquery) idplayer smbl amount])}]]
       [tableview "Items" :items itemKeyVals items])))
 
-(declare content)
+(defn content [current-page]
+     [:div.all
+       [:div.navigation
+         [(pageToKeyword items current-page)
+          {:on-click #(dispatch [:input-changed :current-page items])}
+          "Portfolio"]
+         [(pageToKeyword stocks current-page)
+          {:on-click #(dispatch [:input-changed :current-page stocks])}
+          "Stocks"]
+         [(pageToKeyword symbols current-page)
+          {:on-click #(dispatch [:input-changed :current-page symbols])}
+          "Symbols"]
+        ]
+       [:br]
+       [:div.content
+        [current-page]]])
 
-(defn render-page [innercontent]
-  (swap! state assoc :current-page innercontent)
-  (r/render-component
-   [content innercontent]
-     (.-body js/document)))
+(defn render-page []
+  (let [current-page (subscribe [:current-page])]
+    (fn []
+      (r/render-component
+       [content current-page]
+       (.-body js/document)))
 
-(defn pageToKeyword [page]
-  (if (= page (:current-page @state)) :div.navelement :div.navelement-link))
+(defn pageToKeyword [page current-page]
+  (if (= page current-page) :div.navelement :div.navelement-link))
 
-(defn content [innercontent]
-  [:div.all
-     [:div.navigation
-       [(pageToKeyword items)
-        {:on-click #(render-page items)}
-        "Portfolio"]
-       [(pageToKeyword stocks)
-        {:on-click #(render-page stocks)} "Stocks"]
-       [(pageToKeyword symbols)
-        {:on-click #(render-page symbols)} "Symbols"]
-      ]
-     [:br]
-     [:div.content
-      [innercontent]]])
 
 
 (defn run []
   (dispatch-sync [:initialize 1])
-  (render-page items))
+  (dispatch [:current-page items])
+  (render-page))
 
+(run)
 
 
 
