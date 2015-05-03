@@ -1,51 +1,20 @@
 (ns core.main
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [reagent.core :as r :refer [atom]]
+            [core.definitions :as cd :refer [json-reader
+                                             itemKeyVals
+                                             symbolKeyVals
+                                             stockKeyVals
+                                             initial-state]]
             [cognitect.transit :as transit]
-            [re-frame.core :as rf :refer [subscribe dispatch register-sub]]
+            [re-frame.core :as rf :refer [subscribe
+                                          dispatch
+                                          register-handler
+                                          register-sub]]
             [cljs-http.client :as http]
             [cljs.core.async :refer [<!]]))
 
 (enable-console-print!)
-
-(def json-reader (transit/reader :json))
-
-(def itemKeyVals
-  (partition 2 ["Symbol" "symbol"
-   "Amount" "amount"
-   "Price" "price"
-   "Current price" "currentprice"
-   "Date" "ts"]))
-
-(def symbolKeyVals
-  (partition 2 ["Symbol" "symbol"
-   "Name" "name"
-   "Exchange" "exchDisp"
-   "Type" "typeDisp"]))
-
-(def stockKeyVals
-  (partition 2 ["Symbol" "symbol"
-   "StockExchange" "StockExchange"
-   "Ask" "Ask"
-   "Bid" "Bid"
-   "AverageDailyVolume" "AverageDailyVolume"
-   "BookValue" "BookValue"
-   "Currency" "Currency"
-   "Change" "Change"
-   "YearLow" "YearLow"
-   "YearHigh" "YearHigh"
-   "MarketCapitalization" "MarketCapitalization"
-   "PercentChangeFromYearLow" "PercentChangeFromYearLow"
-   "100dayMovingAverage" "HundreddayMovingAverage"
-   "50dayMovingAverage" "FiftydayMovingAverage"
-   "DividendYield" "DividendYield"
-   "Notes" "Notes"
-   "PEGRatio" "PEGRatio"
-   "ExDividendDate" "ExDividendDate"]))
-
-
-;;TODO
-(def idplayer 1)
 
 (defn read-items-response [response]
   (let [temp1 (:body response)
@@ -66,19 +35,7 @@
       (if (vector? text) text (vector text))))
 
 ;; state
-(def state (atom {:timeout nil
-                  :order true
-                  :current-page nil
-                  :ordersymbol nil
-                  :orderamount nil
-                  :sellsymbol nil
-                  :sellamount nil
-                  :items nil
-                  :input-stock nil
-                  :stocks nil
-                  :input-symbol nil
-                  :symbols [{"symbol" "SZG.SG", "name" "SALZGITTER", "exch" "STU", "type" "S", "exchDisp" "Stuttgart", "typeDisp" "Equity"}
-                           {"symbol" "SZG.MU", "name" "SALZGITTER", "exch" "MUN", "type" "S", "exchDisp" "Munich", "typeDisp" "Equity"}]}))
+(def state (atom initial-state))
 
 ;; queries
 (defn itemquery [param]
@@ -90,14 +47,14 @@
         orderamount (:amount @state)]
     (go (let [response (<! (http/post "order" {:form-params {"idplayer" param "ordersymbol" ordersymbol "amount" orderamount}}))]
         (println response)
-        (itemquery idplayer)))))
+        (itemquery param)))))
 
 (defn sellquery [param]
   (let [sellsymbol (:symbol @state)
         sellamount (:amount @state)]
     (go (let [response (<! (http/post "sell" {:form-params {"idplayer" param "sellsymbol" sellsymbol "amount" sellamount}}))]
         (println response)
-        (itemquery idplayer)))))
+        (itemquery param)))))
 
 (defn symbolquery [param]
   (go (let [response (<! (http/get "symbol" {:query-params {"query" param}}))]
@@ -185,7 +142,7 @@
     [atom-input "symbol" state :symbol] [:br]
     [atom-input "amount" state :amount] [:br]
     [:input {:type "button" :value "Commit"
-            :on-click #((if (:order @state) orderquery sellquery) idplayer)}]])
+            :on-click #((if (:order @state) orderquery sellquery) (:idplayer @state))}]])
 
 (defn items []
   [:div
@@ -219,7 +176,7 @@
       [innercontent]]])
 
 
-(itemquery idplayer)
+(itemquery (:idplayer @state))
 (render-page items)
 
 
