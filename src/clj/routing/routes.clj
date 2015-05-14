@@ -9,7 +9,7 @@
             [compojure.handler :as handler]
             [clojure.data.json :as json]
             [clojure.set :as cljset :refer [subset?]]
-            [clojure.string :as cljstr]
+            [clojure.string :as cljstr :refer [split]]
             [clojure.tools.logging :as log]
             [database.connect :as db])
   (:import (java.sql Date)))
@@ -89,6 +89,11 @@
       (log/info "sell: " sellsymbol " " amount " " idplayer)
       (generate-response (db/sell sellsymbol (Double/parseDouble amount) (Double/parseDouble price) idplayer))))
 
+(defn cleanup-history [csv]
+   (map #(second (split % #",")) (drop 1 (split csv #"\n"))))
+
+
+;;(rt/history-from-yahoo "BAS.DE" 0 1 2000 0 31 2010 "w")
  (defn history-from-yahoo [sym a b c d e f g]
   (let [response (:body (client/get "http://ichart.yahoo.com/table.csv"
                          {:query-params {:s sym
@@ -101,7 +106,7 @@
                                     :g g
                                     :ignore ".csv"}}))]
         (log/info "history from yahoo: " response)
-        response))
+        (cleanup-history response)))
 
 (defn gethistory [{:keys [sym a b c d e f g] :as params}]
   (generate-response (history-from-yahoo sym a b c d e f g)))
@@ -137,26 +142,5 @@
   ;{:status 200, :headers {X-YQL-Host pprd1-node1024-lh3.manhattan.bf1.yahoo.com, Server ATS, Age 0, Content-Type application/json; charset=UTF-8, Access-Control-Allow-Origin *, X-Content-Type-Options nosniff, Connection close, Transfer-Encoding chunked, Date Fri, 24 Apr 2015 10:14:52 GMT, Cache-Control no-cache},
   ;:body {"query":{"count":2,"created":"2015-04-24T10:14:52Z","lang":"en-US","results":{"quote":[{"symbol":"SZG.DE","Ask":"29.74","AverageDailyVolume":"479489","Bid":"29.71","AskRealtime":null,"BidRealtime":null,"BookValue":"56.95","Change_PercentChange":"+0.01 - +0.05%","Change":"+0.01","Commission":null,"Currency":"EUR","ChangeRealtime":null,"AfterHoursChangeRealtime":null,"DividendShare":null,"LastTradeDate":"4/24/2015","TradeDate":null,"EarningsShare":"-0.68","ErrorIndicationreturnedforsymbolchangedinvalid":null,"EPSEstimateCurrentYear":"1.04","EPSEstimateNextYear":null,"EPSEstimateNextQuarter":"0.00","DaysLow":"29.44","DaysHigh":"30.12","YearLow":"21.00","YearHigh":"33.81","HoldingsGainPercent":null,"AnnualizedGain":null,"HoldingsGain":null,"HoldingsGainPercentRealtime":null,"HoldingsGainRealtime":null,"MoreInfo":null,"OrderBookRealtime":null,"MarketCapitalization":"1.61B","MarketCapRealtime":null,"EBITDA":"309.78M","ChangeFromYearLow":"8.74","PercentChangeFromYearLow":"+41.59%","LastTradeRealtimeWithTime":null,"ChangePercentRealtime":null,"ChangeFromYearHigh":"-4.07","PercebtChangeFromYearHigh":"-12.04%","LastTradeWithTime":"11:59am - <b>29.74</b>","LastTradePriceOnly":"29.74","HighLimit":null,"LowLimit":null,"DaysRange":"29.44 - 30.12","DaysRangeRealtime":null,"FiftydayMovingAverage":"28.23","TwoHundreddayMovingAverage":"25.27","ChangeFromTwoHundreddayMovingAverage":"4.47","PercentChangeFromTwoHundreddayMovingAverage":"+17.70%","ChangeFromFiftydayMovingAverage":"1.51","PercentChangeFromFiftydayMovingAverage":"+5.35%","Name":"SALZGITTER","Notes":null,"Open":"29.67","PreviousClose":"29.73","PricePaid":null,"ChangeinPercent":"+0.05%","PriceSales":"0.17","PriceBook":"0.52","ExDividendDate":"5/23/2014","PERatio":null,"DividendPayDate":null,"PERatioRealtime":null,"PEGRatio":"0.00","PriceEPSEstimateCurrentYear":null,"PriceEPSEstimateNextYear":null,"Symbol":"SZG.DE","SharesOwned":null,"ShortRatio":"0.00","LastTradeTime":"11:59am","TickerTrend":null,"OneyrTargetPrice":null,"Volume":"161770","HoldingsValue":null,"HoldingsValueRealtime":null,"YearRange":"21.00 - 33.81","DaysValueChange":null,"DaysValueChangeRealtime":null,"StockExchange":"GER","DividendYield":null,"PercentChange":"+0.05%"},{"symbol":"SZG.MU","Ask":"29.730","AverageDailyVolume":"984","Bid":"29.705","AskRealtime":null,"BidRealtime":null,"BookValue":"0.000","Change_PercentChange":"-0.750 - -2.444%","Change":"-0.750","Commission":null,"Currency":"EUR","ChangeRealtime":null,"AfterHoursChangeRealtime":null,"DividendShare":null,"LastTradeDate":"4/24/2015","TradeDate":null,"EarningsShare":null,"ErrorIndicationreturnedforsymbolchangedinvalid":null,"EPSEstimateCurrentYear":null,"EPSEstimateNextYear":null,"EPSEstimateNextQuarter":"0.000","DaysLow":"29.870","DaysHigh":"29.935","YearLow":"21.170","YearHigh":"33.615","HoldingsGainPercent":null,"AnnualizedGain":null,"HoldingsGain":null,"HoldingsGainPercentRealtime":null,"HoldingsGainRealtime":null,"MoreInfo":null,"OrderBookRealtime":null,"MarketCapitalization":null,"MarketCapRealtime":null,"EBITDA":"0.00","ChangeFromYearLow":"8.765","PercentChangeFromYearLow":"+41.403%","LastTradeRealtimeWithTime":null,"ChangePercentRealtime":null,"ChangeFromYearHigh":"-3.680","PercebtChangeFromYearHigh":"-10.947%","LastTradeWithTime":"8:30am - <b>29.935</b>","LastTradePriceOnly":"29.935","HighLimit":null,"LowLimit":null,"DaysRange":"29.870 - 29.935","DaysRangeRealtime":null,"FiftydayMovingAverage":"28.245","TwoHundreddayMovingAverage":"25.267","ChangeFromTwoHundreddayMovingAverage":"4.668","PercentChangeFromTwoHundreddayMovingAverage":"+18.477%","ChangeFromFiftydayMovingAverage":"1.690","PercentChangeFromFiftydayMovingAverage":"+5.982%","Name":"SALZGITTER","Notes":null,"Open":"29.870","PreviousClose":"30.685","PricePaid":null,"ChangeinPercent":"-2.444%","PriceSales":null,"PriceBook":null,"ExDividendDate":"5/23/2014","PERatio":null,"DividendPayDate":null,"PERatioRealtime":null,"PEGRatio":"0.000","PriceEPSEstimateCurrentYear":null,"PriceEPSEstimateNextYear":null,"Symbol":"SZG.MU","SharesOwned":null,"ShortRatio":"0.000","LastTradeTime":"8:30am","TickerTrend":null,"OneyrTargetPrice":null,"Volume":"100","HoldingsValue":null,"HoldingsValueRealtime":null,"YearRange":"21.170 - 33.615","DaysValueChange":null,"DaysValueChangeRealtime":null,"StockExchange":"MUN","DividendYield":null,"PercentChange":"-2.444%"}]}}}, :request-time 2558, :trace-redirects [http://query.yahooapis.com/v1/public/yql], :orig-content-encoding nil}
 
-  (defn history-from-yahoo [sym a b c d e f g]
-  (let [response (:body (client/get "http://ichart.yahoo.com/table.csv"
-                         {:query-params {:s sym
-                                    :a a
-                                    :b b
-                                    :c c
-                                    :d d
-                                    :e e
-                                    :f f
-                                    :g g
-                                    :ignore ".csv"}}))]
-        (log/info "history from yahoo: " response)
-        response))
-
-  (defn history-from-yahoo [sym a b c d e f g]
-  (let [response (:body (client/get (str "http://ichart.yahoo.com/table.csv?s=" sym
-                                         "&a=" a "&b=" b "&c=" c "&d=" d "&e=" e
-                                         "&f=" f "&g=" g "&ignore=.csv")))]
-        (log/info "history from yahoo: " response)
-        response))
-
-
+  ;;Date,Open,High,Low,Close,Volume,Adj Close\n2010-01-25,39.965,41.57,39.115,41.225,5301000,33.403\n2010-01-18,41.75,42.93,40.13,40.465,4340200,32.787\n
 )
