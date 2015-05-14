@@ -94,15 +94,14 @@
 ;;TODO move to client
 (defn cleanup-history [csv]
    (let [stock-values (map #(assoc {} "y" (second (split % #","))) (drop 1 (split csv #"\n")))
-         indexed (map-indexed (fn [idx itm] (assoc itm "x" idx)) stock-values)
          size (count stock-values)
+         indexed (map-indexed (fn [idx itm] (assoc itm "z" idx "x" (- size (+ idx 1)))) stock-values)
          lesselements (if (< size 100)
                      indexed
                      (let [n (int (Math/ceil (/ size 100)))]
-                      (filter #(= 0 (mod (get % "x") n)) indexed)))]
+                      (filter #(= 0 (mod (get % "z") n)) indexed)))]
        (log/info "haho" lesselements)
-     lesselements
-     ))
+     lesselements))
 
 ;;(rt/history-from-yahoo "BAS.DE" 0 1 2000 0 31 2010 "w")
  (defn history-from-yahoo [sym a b c d e f g]
