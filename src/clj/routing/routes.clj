@@ -91,7 +91,9 @@
 
 ;;TODO move to client
 (defn cleanup-history [csv]
-   (map #(assoc {} "value" (second (split % #","))) (drop 1 (split csv #"\n"))))
+   (let [stock-values (map #(assoc {} "y" (second (split % #","))) (drop 1 (split csv #"\n")))]
+       (map-indexed (fn [idx itm] (assoc itm "x" idx)) stock-values)
+     ))
 
 ;;(rt/history-from-yahoo "BAS.DE" 0 1 2000 0 31 2010 "w")
  (defn history-from-yahoo [sym a b c d e f g]

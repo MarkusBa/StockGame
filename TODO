@@ -4,5 +4,8 @@
 - apply style guide
 - unit tests
 - historize via postgres plugin
+- https://github.com/reagent-project/reagent-cookbook/tree/master/recipes/nvd3
+- set the keys in reagent
+- read https://github.com/Day8/re-frame/wiki/Creating-Reagent-Components
 
 

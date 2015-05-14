@@ -42,7 +42,7 @@
   (let [temp1 (:body response)
         _ (println response)
         temp (transit/read json-reader temp1)]
-    (println temp)
+    ;;(println temp)
     temp
     ))
 
@@ -167,6 +167,41 @@
   [:div
    [:h1 listname]
    [lister items keyVals]])
+
+(defn home []
+  [:div [:h1 "Chart"]
+   [:div#d3-node {:style {:width "1200" :height "600"}} [:svg ]]
+   ])
+
+(defn home-did-mount [my-data]
+    (println "did-mount")
+    (.addGraph js/nv (fn []
+                     (let [chart (.. js/nv -models lineChart
+                                     (margin #js {:left 100})
+                                     (useInteractiveGuideline true)
+                                     (transitionDuration 350)
+                                     (showLegend true)
+                                     (showYAxis true)
+                                     (showXAxis true))]
+                       (.. chart -xAxis
+                           (axisLabel "x-axis")
+                           (tickFormat (.format js/d3 ",r")))
+                       (.. chart -yAxis
+                           (axisLabel "y-axis")
+                           (tickFormat (.format js/d3 ",r")))
+
+
+
+                         (.. js/d3 (select "#d3-node svg")
+                             (datum (clj->js [{:values my-data
+                                               :key "my-red-line"
+                                               :color "red"
+                                               }]))
+                             (call chart))))))
+
+(defn chart [my-data]
+  (r/create-class {:reagent-render home
+                   :component-did-mount (fn [my-data] (home-did-mount my-data))}))
 
 ;; subscriptions
 
@@ -393,7 +428,7 @@
           [:input {:type "button" :value "Submit"
               :on-click #(dispatch
                           [:historyquery @sym @a @b @c @d @e @f @g])}]
-          [tableview "History" :history historyKeyVals @his]
+          [chart @his]
          ]
         ])))
 

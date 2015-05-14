@@ -4,7 +4,7 @@
 (def json-reader (transit/reader :json))
 
 (def historyKeyVals
-  (partition 2 ["Value" "value"]))
+  (partition 2 ["Value" "y"]))
 
 (def history-keywords
   [:sym :a :b :c :d :e :f :g])
