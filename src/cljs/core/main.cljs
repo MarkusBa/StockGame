@@ -39,6 +39,8 @@
 
 ;;handlers
 
+;;TODO more handlers (for the go loops)
+
 (register-handler
  :initialize
  (fn [db [_ idplayer]]
