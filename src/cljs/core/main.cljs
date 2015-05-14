@@ -90,7 +90,7 @@
  :stockquery
  (fn [db [_ param]]
   (go (let [response (<! (http/get "stock" {:query-params {"companyname" param}}))]
-        (dispatch [:input-changed :stocks (read-stock-response response)])))
+        (dispatch ^:flush-dom [:input-changed :stocks (read-stock-response response)])))
   db))
 
 (register-handler
@@ -179,10 +179,12 @@
                      (let [chart (.. js/nv -models lineChart
                                      (margin #js {:left 100})
                                      (useInteractiveGuideline true)
-                                     (transitionDuration 350)
+                                     (transitionDuration -1)
                                      (showLegend true)
                                      (showYAxis true)
                                      (showXAxis true))]
+                       (set! (.-width chart) 1200)
+                       (set! (.-height chart) 600)
                        (.. chart -xAxis
                            (axisLabel "x-axis")
                            (tickFormat (.format js/d3 ",r")))
@@ -193,9 +195,13 @@
 
 
                          (.. js/d3 (select "#d3-node svg")
-                             (datum (clj->js [{:values my-data
+                             (datum (clj->js [{:values (take 20 my-data)
                                                :key "my-red-line"
                                                :color "red"
+                                               }]))
+                             (style (clj->js [{:width 1200
+                                               :height 600
+
                                                }]))
                              (call chart))))))
 
