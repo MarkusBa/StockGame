@@ -89,9 +89,9 @@
       (log/info "sell: " sellsymbol " " amount " " idplayer)
       (generate-response (db/sell sellsymbol (Double/parseDouble amount) (Double/parseDouble price) idplayer))))
 
+;;TODO move to client
 (defn cleanup-history [csv]
-   (map #(second (split % #",")) (drop 1 (split csv #"\n"))))
-
+   (map #(assoc {} "value" (second (split % #","))) (drop 1 (split csv #"\n"))))
 
 ;;(rt/history-from-yahoo "BAS.DE" 0 1 2000 0 31 2010 "w")
  (defn history-from-yahoo [sym a b c d e f g]
@@ -104,9 +104,10 @@
                                     :e e
                                     :f f
                                     :g g
-                                    :ignore ".csv"}}))]
+                                    :ignore ".csv"}}))
+        afterwards (cleanup-history response)]
         (log/info "history from yahoo: " response)
-        (cleanup-history response)))
+   (json/write-str afterwards)))
 
 (defn gethistory [{:keys [sym a b c d e f g] :as params}]
   (generate-response (history-from-yahoo sym a b c d e f g)))

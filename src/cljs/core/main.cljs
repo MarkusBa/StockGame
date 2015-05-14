@@ -3,6 +3,7 @@
                    [reagent.ratom :refer [reaction]])
   (:require [core.definitions :as cd :refer [json-reader
                                              itemKeyVals
+                                             historyKeyVals
                                              symbolKeyVals
                                              stockKeyVals
                                              initial-state]]
@@ -36,6 +37,14 @@
         temp (transit/read json-reader temp1)
         text (get (get (get temp "query") "results")"quote")]
       (if (vector? text) text (vector text))))
+
+(defn read-history-response [response]
+  (let [temp1 (:body response)
+        _ (println response)
+        temp (transit/read json-reader temp1)]
+    (println temp)
+    temp
+    ))
 
 ;;handlers
 
@@ -82,6 +91,15 @@
  (fn [db [_ param]]
   (go (let [response (<! (http/get "stock" {:query-params {"companyname" param}}))]
         (dispatch [:input-changed :stocks (read-stock-response response)])))
+  db))
+
+(register-handler
+ :historyquery
+ (fn [db [_ sym a b c d e f g]]
+  (println sym a b c d e f g)
+  (go (let [response (<! (http/get "history" {:query-params {"sym" sym "a" a "b" b "c" c "d" d "e" e "f" f "g" g}}))]
+
+        (dispatch [:input-changed :history (read-history-response response)])))
   db))
 
 ;; TODO refactor away
@@ -217,6 +235,8 @@
     (let [idplayer (get-in @db [:idplayer])]
       idplayer))))
 
+(declare items)
+
 (register-sub
  :current-page
  (fn [db [_]]
@@ -225,6 +245,79 @@
           page (if (nil? current-page) items current-page)]
       page))))
 
+;;TODO remove, probably should be nested..
+(register-sub
+ :history
+ (fn [db [_]]
+   (reaction
+    (let [his (get-in @db [:history])]
+      his))))
+
+(register-sub
+ :sym
+ (fn [db [_]]
+   (reaction
+    (let [his (get-in @db [:sym])]
+      his))))
+
+(register-sub
+ :a
+ (fn [db [_]]
+   (reaction
+    (let [his (get-in @db [:a])]
+      his))))
+
+(register-sub
+ :b
+ (fn [db [_]]
+   (reaction
+    (let [his (get-in @db [:b])]
+      his))))
+
+(register-sub
+ :c
+ (fn [db [_]]
+   (reaction
+    (let [his (get-in @db [:c])]
+      his))))
+
+(register-sub
+ :d
+ (fn [db [_]]
+   (reaction
+    (let [his (get-in @db [:d])]
+      his))))
+
+(register-sub
+ :e
+ (fn [db [_]]
+   (reaction
+    (let [his (get-in @db [:e])]
+      his))))
+
+(register-sub
+ :f
+ (fn [db [_]]
+   (reaction
+    (let [his (get-in @db [:f])]
+      his))))
+
+(register-sub
+ :g
+ (fn [db [_]]
+   (reaction
+    (let [his (get-in @db [:g])]
+      his))))
+
+
+(comment
+(for [kw cd/history-keywords]
+ (register-sub
+   kw
+   (fn [db [_]]
+    (reaction
+      (let [valu (get-in @db [kw])]
+        valu))))))
 
 ;; ----components--------
 
@@ -281,6 +374,31 @@
                           [(if @is-order :orderquery :sellquery) @idplayer @smbl @amount])}]]
         [tableview "Items" :items itemKeyVals @items]])))
 
+;;TODO refactor for less repetitions
+(defn history []
+  (let [his (subscribe [:history])
+        sym (subscribe [:sym])
+        a (subscribe [:a])
+        b (subscribe [:b])
+        c (subscribe [:c])
+        d (subscribe [:d])
+        e (subscribe [:e])
+        f (subscribe [:f])
+        g (subscribe [:g])
+        ]
+    (fn []
+      [:div
+        [:div
+          [:h2 "History"]
+          [:input {:type "button" :value "Submit"
+              :on-click #(dispatch
+                          [:historyquery @sym @a @b @c @d @e @f @g])}]
+          [tableview "History" :history historyKeyVals @his]
+         ]
+        ])))
+
+;;[tableview "History" :history historyKeyVals @his]
+
 (defn pageToKeyword [page current-page]
   (if (= page current-page) :div.navelement :div.navelement-link))
 
@@ -298,6 +416,9 @@
          [(pageToKeyword symbols @page)
           {:on-click #(dispatch ^:flush-dom [:input-changed :current-page symbols])}
           "Symbols"]
+         [(pageToKeyword history @page)
+          {:on-click #(dispatch ^:flush-dom [:input-changed :current-page history])}
+          "History"]
         ]
        [:br]
        [:div.content

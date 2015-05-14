@@ -3,6 +3,17 @@
 
 (def json-reader (transit/reader :json))
 
+(def historyKeyVals
+  (partition 2 ["Value" "value"]))
+
+(def history-keywords
+  [:sym :a :b :c :d :e :f :g])
+
+(comment
+(def history-keywords
+  [:history :sym :a :b :c :d :e :f :g]))
+
+
 (def itemKeyVals
   (partition 2 ["Symbol" "symbol"
    "Amount" "amount"
@@ -36,11 +47,21 @@
    "PEGRatio" "PEGRatio"
    "ExDividendDate" "ExDividendDate"]))
 
+;;TODO 2010 -> 2015
 (def initial-state
                  {:idplayer 1
+                  :sym "BAS.DE"
+                  :a 0
+                  :b 1
+                  :c 2000
+                  :d 3
+                  :e 31
+                  :f 2010
+                  :g "w"
                   :timeout nil
                   :is-order true
                   :current-page nil
+                  :history nil
                   :symbol nil
                   :amount nil
                   :items nil
