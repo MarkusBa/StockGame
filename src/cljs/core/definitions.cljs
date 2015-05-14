@@ -58,6 +58,7 @@
                   :e 31
                   :f 2010
                   :g "w"
+                  :counter 0
                   :timeout nil
                   :is-order true
                   :current-page nil

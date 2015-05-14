@@ -134,13 +134,15 @@
 (register-handler
  :input-changed-force
  (fn [db [_ inputkey text]]
-   (dispatch [:forceall])
-   (assoc db inputkey text)))
+   ;;TODO
+   (println inputkey text)
+   (assoc db inputkey text)
+    db))
 
 (declare render-page)
 
 (register-handler
- :forceall
+ :nothing
  (fn [db [_]]
   db))
 
@@ -183,7 +185,7 @@
 
 (defn home [_ my-data]
   (fn []
-    (println "rendering home")
+    (println "rendering home" my-data)
     [:div [:h1 "Chart"]
      [:div#d3-node [:svg {:style {:width "1200" :height "600"}}]]
      ]))
@@ -212,10 +214,13 @@
                                                }]))
                              (call chart))))))
 
-(defn mychart [my-data]
-  (println my-data)
+(defn mychart [my-data counter]
+  (println "mychart" my-data counter)
   (r/create-class {:reagent-render #(home % my-data)
-                   :component-did-update #(home-did-mount % my-data)
+                   :component-did-update (fn []
+                                           ;;(.. js/document (getElementById "d3-node") -firstChild remove)
+                                           ;;(println my-data)
+                                           (home-did-mount nil my-data))
                    :component-did-mount #(home-did-mount % my-data)}))
 
 ;; subscriptions
@@ -359,6 +364,12 @@
     (let [his (get-in @db [:g])]
       his))))
 
+(register-sub
+ :counter
+ (fn [db [_]]
+   (reaction
+    (let [his (get-in @db [:counter])]
+      his))))
 
 (comment
 (for [kw cd/history-keywords]
@@ -448,6 +459,7 @@
         e (subscribe [:e])
         f (subscribe [:f])
         g (subscribe [:g])
+        counter (subscribe [:counter])
         ]
     (fn []
       [:div
@@ -456,7 +468,9 @@
           [:input {:type "button" :value "Submit"
               :on-click #(dispatch
                           [:historyquery @sym @a @b @c @d @e @f @g])}]
-          [mychart @his]
+          [:input {:type "button" :value "Rerender"
+              :on-click #(dispatch ^:flush-dom [:input-changed :current-page history])}]
+          [mychart @his @counter]
          ]
         ])))
 
@@ -464,6 +478,7 @@
 
 (defn pageToKeyword [page current-page]
   (if (= page current-page) :div.navelement :div.navelement-link))
+
 
 (defn actual-content []
   (let [page (subscribe [:current-page])]
