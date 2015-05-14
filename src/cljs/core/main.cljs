@@ -131,6 +131,19 @@
  (fn [db [_ inputkey text]]
    (assoc db inputkey text)))
 
+(register-handler
+ :input-changed-force
+ (fn [db [_ inputkey text]]
+   (dispatch [:forceall])
+   (assoc db inputkey text)))
+
+(declare render-page)
+
+(register-handler
+ :forceall
+ (fn [db [_]]
+  db))
+
 ;; ----components without subscriptions-----
 
 (defn tablizer [items keyVals]
@@ -168,7 +181,7 @@
    [:h1 listname]
    [lister items keyVals]])
 
-(defn home []
+(defn home [_ my-data]
   [:div [:h1 "Chart"]
    [:div#d3-node [:svg {:style {:width "1200" :height "600"}}]]
    ])
@@ -199,7 +212,7 @@
 
 (defn mychart [my-data]
   (println my-data)
-  (r/create-class {:reagent-render home
+  (r/create-class {:reagent-render #(home % my-data)
                    :component-did-mount #(home-did-mount % my-data)}))
 
 ;; subscriptions

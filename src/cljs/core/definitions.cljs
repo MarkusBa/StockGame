@@ -61,7 +61,7 @@
                   :timeout nil
                   :is-order true
                   :current-page nil
-                  :history nil
+                  :history []
                   :symbol nil
                   :amount nil
                   :items nil
