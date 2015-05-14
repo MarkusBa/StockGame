@@ -220,7 +220,7 @@
     (r/create-class {:reagent-render #(home @my-data)
                      :display-name  "my-chart"
                      :component-did-update (fn []
-                                             (.. js/document (getElementById "d3-node") -firstChild remove)
+                                             ;;(.. js/document (getElementById "d3-node") -firstChild remove)
                                              ;;(println my-data)
                                              (home-did-mount @my-data))
                      :component-did-mount #(home-did-mount @my-data)})))
