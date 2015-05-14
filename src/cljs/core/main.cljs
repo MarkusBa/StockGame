@@ -173,8 +173,8 @@
    [:div#d3-node {:style {:width "1200" :height "600"}} [:svg ]]
    ])
 
-(defn home-did-mount [my-data]
-    (println "did-mount")
+(defn home-did-mount [_ my-data]
+    (println "did-mount" my-data)
     (.addGraph js/nv (fn []
                      (let [chart (.. js/nv -models lineChart
                                      (margin #js {:left 100})
@@ -199,9 +199,10 @@
                                                }]))
                              (call chart))))))
 
-(defn chart [my-data]
+(defn mychart [my-data]
+  (println my-data)
   (r/create-class {:reagent-render home
-                   :component-did-mount (fn [my-data] (home-did-mount my-data))}))
+                   :component-did-mount #(home-did-mount % my-data)}))
 
 ;; subscriptions
 
@@ -388,11 +389,21 @@
            :on-change #(let [text (-> % .-target .-value)]
                          (dispatch [:input-changed atomkeyword text]))}])
 
+;; TODO delete history
 (defn items []
   (let [amount (subscribe [:amount])
         items (subscribe [:items])
         idplayer (subscribe [:idplayer])
         is-order (subscribe [:is-order])
+        his (subscribe [:history])
+        sym (subscribe [:sym])
+        a (subscribe [:a])
+        b (subscribe [:b])
+        c (subscribe [:c])
+        d (subscribe [:d])
+        e (subscribe [:e])
+        f (subscribe [:f])
+        g (subscribe [:g])
         smbl (subscribe [:symbol])]
     (fn []
       [:div
@@ -404,6 +415,9 @@
            "Order"] [:br]
           [atom-input "symbol" @smbl :symbol] [:br]
           [atom-input "amount" @amount :amount] [:br]
+          [:input {:type "button" :value "Get-history"
+              :on-click #(dispatch
+                          [:historyquery @sym @a @b @c @d @e @f @g])}]
           [:input {:type "button" :value "Commit"
               :on-click #(dispatch
                           [(if @is-order :orderquery :sellquery) @idplayer @smbl @amount])}]]
@@ -428,7 +442,7 @@
           [:input {:type "button" :value "Submit"
               :on-click #(dispatch
                           [:historyquery @sym @a @b @c @d @e @f @g])}]
-          [chart @his]
+          [mychart @his]
          ]
         ])))
 
