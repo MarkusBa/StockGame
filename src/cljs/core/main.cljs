@@ -182,9 +182,11 @@
    [lister items keyVals]])
 
 (defn home [_ my-data]
-  [:div [:h1 "Chart"]
-   [:div#d3-node [:svg {:style {:width "1200" :height "600"}}]]
-   ])
+  (fn []
+    (println "rendering home")
+    [:div [:h1 "Chart"]
+     [:div#d3-node [:svg {:style {:width "1200" :height "600"}}]]
+     ]))
 
 (defn home-did-mount [_ my-data]
     (println "did-mount" my-data)
@@ -213,6 +215,7 @@
 (defn mychart [my-data]
   (println my-data)
   (r/create-class {:reagent-render #(home % my-data)
+                   :component-did-update #(home-did-mount % my-data)
                    :component-did-mount #(home-did-mount % my-data)}))
 
 ;; subscriptions
