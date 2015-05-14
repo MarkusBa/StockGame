@@ -183,14 +183,14 @@
    [:h1 listname]
    [lister items keyVals]])
 
-(defn home [_ my-data]
-  (fn []
+(defn home [my-data]
+  (fn [my-data]
     (println "rendering home" my-data)
     [:div [:h1 "Chart"]
      [:div#d3-node [:svg {:style {:width "1200" :height "600"}}]]
      ]))
 
-(defn home-did-mount [_ my-data]
+(defn home-did-mount [my-data]
     (println "did-mount" my-data)
     (.addGraph js/nv (fn []
                      (let [chart (.. js/nv -models lineChart
@@ -214,14 +214,16 @@
                                                }]))
                              (call chart))))))
 
-(defn mychart [my-data counter]
-  (println "mychart" my-data counter)
-  (r/create-class {:reagent-render #(home % my-data)
-                   :component-did-update (fn []
-                                           ;;(.. js/document (getElementById "d3-node") -firstChild remove)
-                                           ;;(println my-data)
-                                           (home-did-mount nil my-data))
-                   :component-did-mount #(home-did-mount % my-data)}))
+(defn mychart [_]
+  (let [my-data (subscribe [:history])]
+    (println "mychart" @my-data)
+    (r/create-class {:reagent-render #(home @my-data)
+                     :display-name  "my-chart"
+                     :component-did-update (fn []
+                                             (.. js/document (getElementById "d3-node") -firstChild remove)
+                                             ;;(println my-data)
+                                             (home-did-mount @my-data))
+                     :component-did-mount #(home-did-mount @my-data)})))
 
 ;; subscriptions
 
@@ -468,9 +470,7 @@
           [:input {:type "button" :value "Submit"
               :on-click #(dispatch
                           [:historyquery @sym @a @b @c @d @e @f @g])}]
-          [:input {:type "button" :value "Rerender"
-              :on-click #(dispatch ^:flush-dom [:input-changed :current-page history])}]
-          [mychart @his @counter]
+          [mychart nil @his]
          ]
         ])))
 
