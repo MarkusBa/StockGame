@@ -8,5 +8,6 @@
 - set the keys in reagent
 - read https://github.com/Day8/re-frame/wiki/Creating-Reagent-Components
 - force rerender reagent
+- perhaps invert numbering on the x axis
 
 

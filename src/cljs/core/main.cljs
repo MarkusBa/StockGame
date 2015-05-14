@@ -170,7 +170,7 @@
 
 (defn home []
   [:div [:h1 "Chart"]
-   [:div#d3-node {:style {:width "1200" :height "600"}} [:svg ]]
+   [:div#d3-node [:svg {:style {:width "1200" :height "600"}}]]
    ])
 
 (defn home-did-mount [_ my-data]
@@ -182,26 +182,18 @@
                                      (transitionDuration -1)
                                      (showLegend true)
                                      (showYAxis true)
-                                     (showXAxis true))]
-                       (set! (.-width chart) 1200)
-                       (set! (.-height chart) 600)
+                                     (showXAxis false))]
                        (.. chart -xAxis
                            (axisLabel "x-axis")
                            (tickFormat (.format js/d3 ",r")))
                        (.. chart -yAxis
-                           (axisLabel "y-axis")
                            (tickFormat (.format js/d3 ",r")))
 
 
 
                          (.. js/d3 (select "#d3-node svg")
-                             (datum (clj->js [{:values (take 20 my-data)
-                                               :key "my-red-line"
+                             (datum (clj->js [{:values  my-data
                                                :color "red"
-                                               }]))
-                             (style (clj->js [{:width 1200
-                                               :height 600
-
                                                }]))
                              (call chart))))))
 

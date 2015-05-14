@@ -12,7 +12,8 @@
             [clojure.string :as cljstr :refer [split]]
             [clojure.tools.logging :as log]
             [database.connect :as db])
-  (:import (java.sql Date)))
+  (:import (java.sql Date)
+           (java.lang Math)))
 
 ;;(require '(require '[clojure.test :as ct])
 ;;(ct/run-tests 'routing.routes)
@@ -89,10 +90,18 @@
       (log/info "sell: " sellsymbol " " amount " " idplayer)
       (generate-response (db/sell sellsymbol (Double/parseDouble amount) (Double/parseDouble price) idplayer))))
 
+;; TODO remove workaround to show tops 100 elements
 ;;TODO move to client
 (defn cleanup-history [csv]
-   (let [stock-values (map #(assoc {} "y" (second (split % #","))) (drop 1 (split csv #"\n")))]
-       (map-indexed (fn [idx itm] (assoc itm "x" idx)) stock-values)
+   (let [stock-values (map #(assoc {} "y" (second (split % #","))) (drop 1 (split csv #"\n")))
+         indexed (map-indexed (fn [idx itm] (assoc itm "x" idx)) stock-values)
+         size (count stock-values)
+         lesselements (if (< size 100)
+                     indexed
+                     (let [n (int (Math/ceil (/ size 100)))]
+                      (filter #(= 0 (mod (get % "x") n)) indexed)))]
+       (log/info "haho" lesselements)
+     lesselements
      ))
 
 ;;(rt/history-from-yahoo "BAS.DE" 0 1 2000 0 31 2010 "w")
@@ -110,6 +119,7 @@
         afterwards (cleanup-history response)]
         (log/info "history from yahoo: " response)
    (json/write-str afterwards)))
+
 
 (defn gethistory [{:keys [sym a b c d e f g] :as params}]
   (generate-response (history-from-yahoo sym a b c d e f g)))
