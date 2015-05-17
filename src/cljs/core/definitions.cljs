@@ -9,11 +9,6 @@
 (def history-keywords
   [:sym :a :b :c :d :e :f :g])
 
-(comment
-(def history-keywords
-  [:history :sym :a :b :c :d :e :f :g]))
-
-
 (def itemKeyVals
   (partition 2 ["Symbol" "symbol"
    "Amount" "amount"

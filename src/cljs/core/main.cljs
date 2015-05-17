@@ -17,6 +17,7 @@
             [cljs-http.client :as http]
             [cljs.core.async :refer [<!]]))
 
+
 (enable-console-print!)
 
 ;;helper functions for cleaning the arriving json
@@ -229,68 +230,23 @@
 
 ;; TODO are those necessary?
 
-(register-sub
- :symbols
- (fn [db [_]]
-   (reaction
-    (let [symbols (get-in @db [:symbols])]
-      symbols))))
+(defn reg! [kw]
+ (register-sub
+   kw
+   (fn [db [_]]
+    (reaction
+      (let [valu (get-in @db [kw])]
+        valu)))))
 
-(register-sub
- :stocks
- (fn [db [_]]
-   (reaction
-    (let [stocks (get-in @db [:stocks])]
-      stocks))))
-
-(register-sub
- :items
- (fn [db [_]]
-   (reaction
-    (let [items (get-in @db [:items])]
-      items))))
-
-(register-sub
- :input-symbol
- (fn [db [_]]
-   (reaction
-    (let [input-symbol (get-in @db [:input-symbol])]
-      input-symbol))))
-
-(register-sub
- :input-stock
- (fn [db [_]]
-   (reaction
-    (let [input-stock (get-in @db [:input-stock])]
-      input-stock))))
-
-(register-sub
- :amount
- (fn [db [_]]
-   (reaction
-    (let [amount (get-in @db [:amount])]
-      amount))))
-
-(register-sub
- :symbol
- (fn [db [_]]
-   (reaction
-    (let [smbl (get-in @db [:symbol])]
-      smbl))))
-
-(register-sub
- :is-order
- (fn [db [_]]
-   (reaction
-    (let [is-order (get-in @db [:is-order])]
-      is-order))))
-
-(register-sub
- :idplayer
- (fn [db [_]]
-   (reaction
-    (let [idplayer (get-in @db [:idplayer])]
-      idplayer))))
+(reg! :symbols)
+(reg! :stocks)
+(reg! :items)
+(reg! :input-symbol)
+(reg! :input-stock)
+(reg! :amount)
+(reg! :symbol)
+(reg! :is-order)
+(reg! :idplayer)
 
 (declare items)
 
@@ -302,85 +258,19 @@
           page (if (nil? current-page) items current-page)]
       page))))
 
+
+(reg! :counter)
 ;;TODO remove, probably should be nested..
-(register-sub
- :history
- (fn [db [_]]
-   (reaction
-    (let [his (get-in @db [:history])]
-      his))))
+(reg! :history)
 
-(register-sub
- :sym
- (fn [db [_]]
-   (reaction
-    (let [his (get-in @db [:sym])]
-      his))))
-
-(register-sub
- :a
- (fn [db [_]]
-   (reaction
-    (let [his (get-in @db [:a])]
-      his))))
-
-(register-sub
- :b
- (fn [db [_]]
-   (reaction
-    (let [his (get-in @db [:b])]
-      his))))
-
-(register-sub
- :c
- (fn [db [_]]
-   (reaction
-    (let [his (get-in @db [:c])]
-      his))))
-
-(register-sub
- :d
- (fn [db [_]]
-   (reaction
-    (let [his (get-in @db [:d])]
-      his))))
-
-(register-sub
- :e
- (fn [db [_]]
-   (reaction
-    (let [his (get-in @db [:e])]
-      his))))
-
-(register-sub
- :f
- (fn [db [_]]
-   (reaction
-    (let [his (get-in @db [:f])]
-      his))))
-
-(register-sub
- :g
- (fn [db [_]]
-   (reaction
-    (let [his (get-in @db [:g])]
-      his))))
-
-(register-sub
- :counter
- (fn [db [_]]
-   (reaction
-    (let [his (get-in @db [:counter])]
-      his))))
-
-(comment
-(for [kw cd/history-keywords]
- (register-sub
-   kw
-   (fn [db [_]]
-    (reaction
-      (let [valu (get-in @db [kw])]
-        valu))))))
+(reg! :sym)
+(reg! :a)
+(reg! :b)
+(reg! :c)
+(reg! :d)
+(reg! :e)
+(reg! :f)
+(reg! :g)
 
 ;; ----components--------
 
