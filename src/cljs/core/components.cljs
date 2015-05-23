@@ -77,7 +77,8 @@
                            (call chart))))))
 
 (defn mychart [_]
-  (let [my-data (subscribe [:chart :history])]
+  (let [chart (subscribe [:chart])
+        my-data (reaction (:history @chart))]
     (println "mychart" @my-data)
     (r/create-class {:reagent-render #(home @my-data)
                      :display-name  "my-chart"

@@ -4,7 +4,6 @@
     <list default="true" id="dc16c0fa-8da2-4860-8498-00173ad8e74e" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/cljs/core/components.cljs" afterPath="$PROJECT_DIR$/src/cljs/core/components.cljs" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/replstate.xml" afterPath="$PROJECT_DIR$/.idea/replstate.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/cljs/core/subs.cljs" afterPath="$PROJECT_DIR$/src/cljs/core/subs.cljs" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="StockGame.iws" />
@@ -43,8 +42,8 @@
       <file leaf-file-name="definitions.cljs" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/cljs/core/definitions.cljs">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="328" max-vertical-offset="1095">
-              <caret line="1" column="2" selection-start-line="1" selection-start-column="2" selection-end-line="1" selection-end-column="2" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="313" max-vertical-offset="1095">
+              <caret line="52" column="32" selection-start-line="52" selection-start-column="32" selection-end-line="52" selection-end-column="32" />
               <folding />
             </state>
           </provider>
@@ -60,20 +59,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="components.cljs" pinned="false" current-in-tab="false">
+      <file leaf-file-name="components.cljs" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/cljs/core/components.cljs">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1845" max-vertical-offset="3165">
-              <caret line="149" column="34" selection-start-line="149" selection-start-column="34" selection-end-line="149" selection-end-column="34" />
+            <state vertical-scroll-proportion="0.7431551" vertical-offset="630" max-vertical-offset="3180">
+              <caret line="80" column="15" selection-start-line="80" selection-start-column="15" selection-end-line="80" selection-end-column="15" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="subs.cljs" pinned="false" current-in-tab="true">
+      <file leaf-file-name="subs.cljs" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/cljs/core/subs.cljs">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.80443287" vertical-offset="118" max-vertical-offset="1035">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1035">
               <caret line="49" column="17" selection-start-line="49" selection-start-column="17" selection-end-line="49" selection-end-column="17" />
               <folding />
             </state>
@@ -109,10 +108,10 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/cljs/core/main.cljs" />
-        <option value="$PROJECT_DIR$/src/cljs/core/definitions.cljs" />
         <option value="$PROJECT_DIR$/src/cljs/core/handlers.cljs" />
-        <option value="$PROJECT_DIR$/src/cljs/core/components.cljs" />
         <option value="$PROJECT_DIR$/src/cljs/core/subs.cljs" />
+        <option value="$PROJECT_DIR$/src/cljs/core/definitions.cljs" />
+        <option value="$PROJECT_DIR$/src/cljs/core/components.cljs" />
       </list>
     </option>
   </component>
@@ -550,7 +549,7 @@
       <created>1432369476314</created>
       <option name="number" value="Default" />
       <updated>1432369476314</updated>
-      <workItem from="1432369477904" duration="12155000" />
+      <workItem from="1432369477904" duration="15516000" />
     </task>
     <task id="LOCAL-00001" summary="Moved handlers to separate file">
       <created>1432374414407</created>
@@ -582,11 +581,17 @@
       <option name="project" value="LOCAL" />
       <updated>1432411746745</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Editing works, the chart not....">
+      <created>1432412186345</created>
+      <option name="number" value="00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1432412186345</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="12155000" />
+    <option name="totallyTimeSpent" value="15516000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1438" height="898" extended-state="0" />
@@ -645,7 +650,8 @@
     <MESSAGE value="Put chart-related data in a nested map" />
     <MESSAGE value="Tiny change" />
     <MESSAGE value="Snapshot" />
-    <option name="LAST_COMMIT_MESSAGE" value="Snapshot" />
+    <MESSAGE value="Editing works, the chart not...." />
+    <option name="LAST_COMMIT_MESSAGE" value="Editing works, the chart not...." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -680,22 +686,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/cljs/core/definitions.cljs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="328" max-vertical-offset="1095">
-          <caret line="1" column="2" selection-start-line="1" selection-start-column="2" selection-end-line="1" selection-end-column="2" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cljs/core/components.cljs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1845" max-vertical-offset="3165">
-          <caret line="149" column="34" selection-start-line="149" selection-start-column="34" selection-end-line="149" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/cljs/core/handlers.cljs">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="1072" max-vertical-offset="2220">
@@ -706,8 +696,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/cljs/core/subs.cljs">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.80443287" vertical-offset="118" max-vertical-offset="1035">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1035">
           <caret line="49" column="17" selection-start-line="49" selection-start-column="17" selection-end-line="49" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cljs/core/definitions.cljs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="313" max-vertical-offset="1095">
+          <caret line="52" column="32" selection-start-line="52" selection-start-column="32" selection-end-line="52" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cljs/core/components.cljs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7431551" vertical-offset="630" max-vertical-offset="3180">
+          <caret line="80" column="15" selection-start-line="80" selection-start-column="15" selection-end-line="80" selection-end-column="15" />
           <folding />
         </state>
       </provider>
