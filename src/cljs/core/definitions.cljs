@@ -1,7 +1,7 @@
 (ns core.definitions
   (:require [cognitect.transit :as transit]))
 
-(def json-reader (transit/reader :json))
+
 
 (def historyKeyVals
   (partition 2 ["Value" "y"]))
