@@ -43,6 +43,16 @@
 
 (comment
   (register-sub
+    :sym
+    (fn [db [chart & rest]]
+      (reaction
+        (let [ret (get-in @db [:chart :sym])]
+          ret))))
+  )
+
+
+(comment
+  (register-sub
     :chart
     (fn [db [chart & rest]]
       (reaction

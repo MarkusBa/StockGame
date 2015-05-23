@@ -159,7 +159,7 @@
       [:div
        [:div
         [:h2 "History"]
-        [atom-input "symbol" @sym [:chart :symbol]] [:br]
+        [atom-input "symbol" @sym [:chart :sym]] [:br]
         [atom-input "from-month" @a [:chart :a]] [:br]
         [atom-input "from-day" @b [:chart :b]] [:br]
         [atom-input "from-year" @c [:chart :c]] [:br]
