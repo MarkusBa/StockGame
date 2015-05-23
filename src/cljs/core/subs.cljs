@@ -41,8 +41,8 @@
 
 (register-sub
   :chart
-  (fn [db [chart key]]
+  (fn [db [chart & rest]]
     (reaction
-      (let [ret (get-in @db [:chart key]) ]
+      (let [ret (get-in @db `[:chart ~@rest])]
         ret))))
 
