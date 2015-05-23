@@ -39,10 +39,15 @@
 
 (reg! :counter)
 
-(register-sub
-  :chart
-  (fn [db [chart & rest]]
-    (reaction
-      (let [ret (get-in @db `[:chart ~@rest])]
-        ret))))
+(reg! :chart)
+
+(comment
+  (register-sub
+    :chart
+    (fn [db [chart & rest]]
+      (reaction
+        (let [ret (get-in @db `[:chart ~@rest])]
+          ret))))
+
+  )
 

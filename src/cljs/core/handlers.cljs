@@ -124,6 +124,7 @@
 (register-handler
   :assoc-in-db
   (fn [db [_ inputvector text]]
+    (println inputvector text)
     (assoc-in db inputvector text)))
 
 (register-handler

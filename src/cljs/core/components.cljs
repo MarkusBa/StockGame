@@ -115,12 +115,12 @@
        [atom-input-blur "company-name" @input-stock :input-stock :stockquery]
        [tableview "Stock" :stocks stockKeyVals @stockslist]])))
 
-(defn atom-input [place oldvalue atomkeyword]
+(defn atom-input [place oldvalue path-to-value]
   [:input {:type "text"
            :placeholder place
            :value oldvalue
            :on-change #(let [text (-> % .-target .-value)]
-                        (dispatch [:input-changed atomkeyword text]))}])
+                        (dispatch [:assoc-in-db path-to-value text]))}])
 
 (defn items []
   (let [amount (subscribe [:amount])
@@ -136,8 +136,8 @@
                  :checked @is-order
                  :on-change #(dispatch [:input-changed :is-order (not @is-order)])}
          "Order"] [:br]
-        [atom-input "symbol" @smbl :symbol] [:br]
-        [atom-input "amount" @amount :amount] [:br]
+        [atom-input "symbol" @smbl [:symbol]] [:br]
+        [atom-input "amount" @amount [:amount]] [:br]
         [:input {:type "button" :value "Commit"
                  :on-click #(dispatch
                              [(if @is-order :orderquery :sellquery) @idplayer @smbl @amount])}]]
@@ -145,19 +145,28 @@
 
 ;;TODO refactor for less repetitions
 (defn history []
-  (let [his (subscribe [:chart :history])
-        sym (subscribe [:chart :sym])
-        a (subscribe [:chart :a])
-        b (subscribe [:chart :b])
-        c (subscribe [:chart :c])
-        d (subscribe [:chart :d])
-        e (subscribe [:chart :e])
-        f (subscribe [:chart :f])
-        g (subscribe [:chart :g])]
+  (let [chart (subscribe [:chart])
+        his (reaction (:history @chart))
+        sym (reaction (:sym @chart))
+        a (reaction (:a @chart))
+        b (reaction (:b @chart))
+        c (reaction (:c @chart))
+        d (reaction (:d @chart))
+        e (reaction (:e @chart))
+        f (reaction (:f @chart))
+        g (reaction (:g @chart))]
     (fn []
       [:div
        [:div
         [:h2 "History"]
+        [atom-input "symbol" @sym [:chart :symbol]] [:br]
+        [atom-input "from-month" @a [:chart :a]] [:br]
+        [atom-input "from-day" @b [:chart :b]] [:br]
+        [atom-input "from-year" @c [:chart :c]] [:br]
+        [atom-input "to-month" @d [:chart :d]] [:br]
+        [atom-input "to-day" @e [:chart :e]] [:br]
+        [atom-input "to-year" @f [:chart :f]] [:br]
+        [atom-input "stepsize" @g [:chart :g]] [:br]
         [:input {:type "button" :value "Submit"
                  :on-click #(dispatch
                              [:historyquery @sym @a @b @c @d @e @f @g])}]
