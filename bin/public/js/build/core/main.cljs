@@ -17,6 +17,7 @@
             [cljs-http.client :as http]
             [cljs.core.async :refer [<!]]))
 
+
 (enable-console-print!)
 
 ;;helper functions for cleaning the arriving json
@@ -47,6 +48,8 @@
     ))
 
 ;;handlers
+
+;;TODO more handlers (for the go loops)
 
 (register-handler
  :initialize
@@ -204,6 +207,8 @@
                        (.. chart -yAxis
                            (tickFormat (.format js/d3 ",r")))
 
+
+
                          (.. js/d3 (select "#d3-node svg")
                              (datum (clj->js [{:values  my-data
                                                :color "red"
@@ -224,6 +229,7 @@
 ;; subscriptions
 
 ;; TODO are those necessary?
+
 (defn reg! [kw]
  (register-sub
    kw
@@ -300,11 +306,21 @@
            :on-change #(let [text (-> % .-target .-value)]
                          (dispatch [:input-changed atomkeyword text]))}])
 
+;; TODO delete history
 (defn items []
   (let [amount (subscribe [:amount])
         items (subscribe [:items])
         idplayer (subscribe [:idplayer])
         is-order (subscribe [:is-order])
+        his (subscribe [:history])
+        sym (subscribe [:sym])
+        a (subscribe [:a])
+        b (subscribe [:b])
+        c (subscribe [:c])
+        d (subscribe [:d])
+        e (subscribe [:e])
+        f (subscribe [:f])
+        g (subscribe [:g])
         smbl (subscribe [:symbol])]
     (fn []
       [:div
@@ -316,6 +332,9 @@
            "Order"] [:br]
           [atom-input "symbol" @smbl :symbol] [:br]
           [atom-input "amount" @amount :amount] [:br]
+          [:input {:type "button" :value "Get-history"
+              :on-click #(dispatch
+                          [:historyquery @sym @a @b @c @d @e @f @g])}]
           [:input {:type "button" :value "Commit"
               :on-click #(dispatch
                           [(if @is-order :orderquery :sellquery) @idplayer @smbl @amount])}]]
