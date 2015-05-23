@@ -5,6 +5,8 @@
             [core.handlers :as handlers]
             ))
 
+(enable-console-print!)
+
 ;; subscriptions
 
 ;; TODO are those necessary?
@@ -17,17 +19,17 @@
           valu)))))
 
 
-  (reg! :symbols)
-  (reg! :stocks)
-  (reg! :items)
-  (reg! :input-symbol)
-  (reg! :input-stock)
-  (reg! :amount)
-  (reg! :symbol)
-  (reg! :is-order)
-  (reg! :idplayer)
+(reg! :symbols)
+(reg! :stocks)
+(reg! :items)
+(reg! :input-symbol)
+(reg! :input-stock)
+(reg! :amount)
+(reg! :symbol)
+(reg! :is-order)
+(reg! :idplayer)
 
-  (register-sub
+(register-sub
     :current-page
     (fn [db [_]]
       (reaction
@@ -35,17 +37,12 @@
               page (if (nil? current-page) items current-page)]
           page))))
 
+(reg! :counter)
 
-  (reg! :counter)
-  ;;TODO remove, probably should be nested..
-  (reg! :history)
-
-  (reg! :sym)
-  (reg! :a)
-  (reg! :b)
-  (reg! :c)
-  (reg! :d)
-  (reg! :e)
-  (reg! :f)
-  (reg! :g)
+(register-sub
+  :chart
+  (fn [db [chart key]]
+    (reaction
+      (let [ret (get-in @db [:chart key]) ]
+        ret))))
 

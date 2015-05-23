@@ -1,7 +1,5 @@
 (ns core.definitions
-  (:require [cognitect.transit :as transit]))
-
-
+  )
 
 (def historyKeyVals
   (partition 2 ["Value" "y"]))
@@ -45,19 +43,19 @@
 ;;TODO 2010 -> 2015
 (def initial-state
                  {:idplayer 1
-                  :sym "BAS.DE"
-                  :a 0
-                  :b 1
-                  :c 2000
-                  :d 3
-                  :e 31
-                  :f 2010
-                  :g "w"
+                  :chart {:sym "BAS.DE"
+                          :a 0
+                          :b 1
+                          :c 2000
+                          :d 3
+                          :e 31
+                          :f 2010
+                          :g "w"
+                          :history []}
                   :counter 0
                   :timeout nil
                   :is-order true
                   :current-page nil
-                  :history []
                   :symbol nil
                   :amount nil
                   :items nil

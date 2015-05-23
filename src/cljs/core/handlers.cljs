@@ -2,9 +2,9 @@
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require  [cognitect.transit :as transit]
              [cljs-http.client :as http]
-             [core.definitions :as cd :refer [initial-state]]
+             [core.definitions :refer [initial-state]]
              [cljs.core.async :refer [<!]]
-             [re-frame.core :as rf :refer [dispatch
+             [re-frame.core  :refer [dispatch
                                            register-handler]]))
 
 (enable-console-print!)
@@ -89,7 +89,7 @@
     (println sym a b c d e f g)
     (go (let [response (<! (http/get "history" {:query-params {"sym" sym "a" a "b" b "c" c "d" d "e" e "f" f "g" g}}))]
 
-          (dispatch [:input-changed :history (read-history-response response)])))
+          (dispatch [:assoc-in-db [:chart :history] (read-history-response response)])))
     db))
 
 ;; TODO refactor away
@@ -120,6 +120,11 @@
   :input-changed
   (fn [db [_ inputkey text]]
     (assoc db inputkey text)))
+
+(register-handler
+  :assoc-in-db
+  (fn [db [_ inputvector text]]
+    (assoc-in db inputvector text)))
 
 (register-handler
   :input-changed-force

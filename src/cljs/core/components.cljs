@@ -77,7 +77,7 @@
                            (call chart))))))
 
 (defn mychart [_]
-  (let [my-data (subscribe [:history])]
+  (let [my-data (subscribe [:chart :history])]
     (println "mychart" @my-data)
     (r/create-class {:reagent-render #(home @my-data)
                      :display-name  "my-chart"
@@ -145,17 +145,15 @@
 
 ;;TODO refactor for less repetitions
 (defn history []
-  (let [his (subscribe [:history])
-        sym (subscribe [:sym])
-        a (subscribe [:a])
-        b (subscribe [:b])
-        c (subscribe [:c])
-        d (subscribe [:d])
-        e (subscribe [:e])
-        f (subscribe [:f])
-        g (subscribe [:g])
-        counter (subscribe [:counter])
-        ]
+  (let [his (subscribe [:chart :history])
+        sym (subscribe [:chart :sym])
+        a (subscribe [:chart :a])
+        b (subscribe [:chart :b])
+        c (subscribe [:chart :c])
+        d (subscribe [:chart :d])
+        e (subscribe [:chart :e])
+        f (subscribe [:chart :f])
+        g (subscribe [:chart :g])]
     (fn []
       [:div
        [:div
@@ -166,8 +164,6 @@
         [mychart nil @his]
         ]
        ])))
-
-;;[tableview "History" :history historyKeyVals @his]
 
 (defn pageToKeyword [page current-page]
   (if (= page current-page) :div.navelement :div.navelement-link))
