@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ReplState" timestamp="1432415899678">{:repl-history {:ide [], :local [&quot;(+ 1 1)&quot; &quot;(require '[routing.routes :as rt])&quot; &quot;(require '[database.connect :as db])&quot; &quot;(db/get-items \&quot;a\&quot;)&quot;], :remote []}}</component>
+  <component name="ReplState" timestamp="1432448014256">{:repl-history {:ide [], :local [&quot;(+ 1 1)&quot; &quot;(require '[database.connect :as db])&quot; &quot;(db/get-items \&quot;a\&quot;)&quot; &quot;(require '[routing.routes :as rt])&quot; &quot;(defn a [x &amp; rest]\n  (println (type rest)))&quot; &quot;(a 1 1)&quot; &quot;(defn b [x &amp; rest]\n  (println (type (flatten rest))))&quot; &quot;(b 1 1)&quot; &quot;(flatten '(1))&quot; &quot;`[:chart ~(flatten '(1 1)) ]&quot; &quot;(flatten '[:chart '(1 1)])&quot; &quot;(flatten '[:chart (1 1)])&quot; &quot;(into [] '(:chart 1 1))&quot; &quot;(flatten '(:chart (:sym)) )&quot; &quot;(not= nil [])&quot; &quot;(+ 1 1\n   )&quot;], :remote []}}</component>
 </project>
